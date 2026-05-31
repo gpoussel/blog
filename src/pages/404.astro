@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const cover =
+  "https://images.unsplash.com/photo-1736165484220-146be72b3f0f?auto=format&fit=crop&w=1600&q=80";
+const photoUrl =
+  "https://unsplash.com/photos/a-path-going-up-a-hill-in-the-fog-MZtvPBb8HJI";
+---
+
+<BaseLayout
+  title="Page not found"
+  description="This page isn't on the map. The way back home is easy."
+>
+  <section class="container notfound">
+    <figure class="cover">
+      <img
+        src={cover}
+        alt="A narrow trail climbing into thick mountain fog."
+        width="1600"
+        height="1067"
+        fetchpriority="high"
+      />
+      <figcaption>
+        Photo by <a href={photoUrl} target="_blank" rel="noopener noreferrer"
+          >Queenie Wang</a
+        > on Unsplash
+      </figcaption>
+    </figure>
+
+    <div class="text">
+      <p class="eyebrow">Error 404</p>
+      <h1>You've wandered off the path.</h1>
+      <p class="lede">
+        This page isn't on the map. It may have moved, or the link was
+        mistyped. Either way, the way back is easy.
+      </p>
+      <a href="/" class="home-link">← Back to the homepage</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(3rem, 7vw, 5rem);
+    max-width: 52rem;
+    display: grid;
+    gap: clamp(1.8rem, 4vw, 2.8rem);
+  }
+
+  .cover {
+    margin: 0;
+  }
+  .cover img {
+    width: 100%;
+    max-height: 24rem;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+  }
+  .cover figcaption {
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-align: center;
+    margin-top: 0.7rem;
+  }
+  .cover figcaption a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklch, var(--muted) 45%, transparent);
+    text-underline-offset: 2px;
+    transition: color 0.2s var(--ease-out);
+  }
+  .cover figcaption a:hover {
+    color: var(--primary);
+  }
+
+  .text h1 {
+    font-size: var(--step-4);
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+    margin-top: 0.6rem;
+    text-wrap: balance;
+  }
+  .lede {
+    margin-top: 1.2rem;
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 46ch;
+  }
+
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 1.8rem;
+    font-family: var(--font-ui);
+    font-weight: 560;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0.6rem 1.15rem;
+    border-radius: 999px;
+    color: var(--ink);
+    transition: border-color 0.2s var(--ease-out),
+      transform 0.2s var(--ease-out), color 0.2s var(--ease-out);
+  }
+  .home-link:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    transform: translateX(-3px);
+  }
+  .home-link:focus-visible {
+    outline: none;
+    box-shadow: var(--ring);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-link:hover {
+      transform: none;
+    }
+  }
+</style>
