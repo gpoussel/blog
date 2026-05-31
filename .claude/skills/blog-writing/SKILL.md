@@ -71,6 +71,23 @@ But this default yields to the user. If they ask for a specific length ("a quick
 
 The first draft is almost always too long. Write it, then ask of each paragraph: does the post die without this? If not, it goes. Redundant restatements, throat-clearing, and the second example that makes the same point as the first are the usual fat. Trust the reader to keep up.
 
+## Images and galleries
+
+Photos go in a `:::gallery` block, which works anywhere in the body. It holds one to four images and picks the layout from the count: one image fills the column at its natural shape, two or three share a single row, four become a 2x2 grid. Clicking any photo opens it large in a lightbox.
+
+```markdown
+:::gallery
+
+![The harbour at Cerbère, where the Pyrenees drop into the Mediterranean.](harbour.jpg)
+![A pink flower spike against dense, sunlit greenery.](flower.jpg)
+
+:::
+```
+
+The filename resolves to `src/assets/photos/`, the same convention as the post's `cover`. A new phone photo has to be processed first: `pnpm photo <file>` writes the master into that folder (see CLAUDE.md). A bare filename with no matching file fails the build on purpose. An `http(s)://` URL also works and is rendered as-is, without optimization.
+
+The alt text does double duty. It's the caption shown under the enlarged photo, and it's what a screen reader reads. So it's real copy: write it in the house voice, specific and plain ("The harbour at Cerbère, where the Pyrenees drop into the Mediterranean"), not a label ("harbour photo"). And resist padding. One honest photo that earns its place beats four that fill space.
+
 ## Sentence-level craft
 
 This is where text stops sounding human. Most "AI slop" lives at the sentence level, and so does the cure.
@@ -128,6 +145,7 @@ Read the draft once with these eyes. You don't need to score it, just notice:
 6. Is the length right for the brief? If the user gave no target, aim for 400-700 and cut any paragraph that repeats another. If they asked for longer or shorter, match that instead.
 7. Does the ending say something new, or just repeat the intro?
 8. Does the frontmatter `description` work as a search snippet? It's what Google and social cards show, so make it a real, specific sentence (not a teaser), and let the title's main words appear naturally in the post's first paragraph and at least one heading.
-9. Last check: does this sound like one specific curious person, or like anyone could have generated it? If it's the second one, find the place to put a real opinion, a real number, or a real moment of doubt.
+9. If the post uses a `:::gallery`, does each image's alt text read like a real sentence in the house voice? It's the caption and the screen-reader text, so a vague label is a missed chance.
+10. Last check: does this sound like one specific curious person, or like anyone could have generated it? If it's the second one, find the place to put a real opinion, a real number, or a real moment of doubt.
 
 Don't sand it down to perfection. A small redundancy kept for rhythm, a fragment, a casual aside in the middle of a technical point: those are the fingerprints of a person. Leave some in.

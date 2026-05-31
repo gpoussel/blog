@@ -1,0 +1,321 @@
+---
+import { Icon } from "astro-icon/components";
+
+// Shared image lightbox. Any `[data-lightbox-item]` button on the page (post
+// galleries from the :::gallery directive, the about-page strip) opens this
+// single native <dialog>. Items sharing a `[data-lightbox]` container form one
+// set you can page through with the arrows / arrow keys. The caption is the
+// triggering image's alt text. Include it once per page.
+---
+
+<dialog class="lightbox" aria-label="Image viewer">
+  <button class="lightbox__close" type="button" data-close aria-label="Close">
+    <Icon name="lucide:x" />
+  </button>
+
+  <button
+    class="lightbox__nav lightbox__nav--prev"
+    type="button"
+    data-prev
+    aria-label="Previous image"
+  >
+    <Icon name="lucide:chevron-left" />
+  </button>
+
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" alt="" />
+    <figcaption class="lightbox__caption"></figcaption>
+  </figure>
+
+  <button
+    class="lightbox__nav lightbox__nav--next"
+    type="button"
+    data-next
+    aria-label="Next image"
+  >
+    <Icon name="lucide:chevron-right" />
+  </button>
+</dialog>
+
+<style>
+  .lightbox {
+    /* Fill the viewport; the figure inside is centred. The transparent margin
+       around it is part of the dialog, so a click there closes (see script). */
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: clamp(1rem, 4vw, 3rem);
+    border: none;
+    background: transparent;
+    overflow: hidden;
+    color: var(--ink);
+  }
+  .lightbox:not([open]) {
+    display: none;
+  }
+  .lightbox[open] {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: 1fr;
+    align-items: center;
+    gap: clamp(0.5rem, 2vw, 1.25rem);
+  }
+
+  .lightbox::backdrop {
+    background: oklch(0.16 0.02 244 / 0.78);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+  }
+
+  .lightbox__figure {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    min-height: 0;
+    margin: 0;
+  }
+  .lightbox__img {
+    max-width: 100%;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    background: var(--surface);
+    /* fade each new photo in once it has decoded */
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out);
+  }
+  .lightbox__img.is-loaded {
+    opacity: 1;
+  }
+  .lightbox__caption {
+    flex: none;
+    max-width: min(60ch, 100%);
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: oklch(0.92 0.01 240);
+    text-align: center;
+    text-wrap: pretty;
+  }
+
+  /* Controls: quiet slate chips that lift on hover, over the dark backdrop. */
+  .lightbox__close,
+  .lightbox__nav {
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid oklch(1 0 0 / 0.18);
+    background: oklch(0.27 0.03 244 / 0.85);
+    color: oklch(0.97 0.005 240);
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background-color 0.2s var(--ease-out),
+      border-color 0.2s var(--ease-out),
+      transform 0.2s var(--ease-out);
+  }
+  .lightbox__close:hover,
+  .lightbox__nav:hover {
+    background: oklch(0.32 0.04 244 / 0.95);
+    border-color: oklch(1 0 0 / 0.32);
+  }
+  .lightbox__close:focus-visible,
+  .lightbox__nav:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px oklch(0.16 0.02 244),
+      0 0 0 5px var(--accent);
+  }
+
+  .lightbox__close {
+    position: absolute;
+    top: clamp(0.75rem, 2.5vw, 1.5rem);
+    right: clamp(0.75rem, 2.5vw, 1.5rem);
+    width: 2.6rem;
+    height: 2.6rem;
+    z-index: 1;
+  }
+  .lightbox__nav {
+    width: clamp(2.6rem, 6vw, 3.2rem);
+    height: clamp(2.6rem, 6vw, 3.2rem);
+  }
+  .lightbox__nav--prev {
+    grid-column: 1;
+  }
+  .lightbox__nav--next {
+    grid-column: 3;
+  }
+  .lightbox__close :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .lightbox__nav :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  /* Single-image sets: the dialog drops the nav columns entirely. */
+  .lightbox[data-single] .lightbox__nav {
+    display: none;
+  }
+  .lightbox[data-single] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lightbox[data-single] .lightbox__figure {
+    grid-column: 1;
+  }
+
+  /* Entrance: backdrop and figure ease in from a near state. */
+  @starting-style {
+    .lightbox[open]::backdrop {
+      opacity: 0;
+    }
+    .lightbox[open] .lightbox__figure {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+  .lightbox::backdrop {
+    transition: opacity 0.3s var(--ease-out);
+  }
+  .lightbox__figure {
+    transition:
+      opacity 0.3s var(--ease-out),
+      transform 0.3s var(--ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox__img,
+    .lightbox__figure,
+    .lightbox::backdrop {
+      transition: none;
+    }
+    .lightbox__img {
+      opacity: 1;
+    }
+  }
+
+  /* On narrow screens move the arrows below the image so they don't crowd it. */
+  @media (max-width: 34rem) {
+    .lightbox[open] {
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(0, 1fr) auto;
+      justify-items: center;
+    }
+    .lightbox__figure {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .lightbox__nav {
+      grid-row: 2;
+    }
+    .lightbox__nav--prev {
+      grid-column: 1;
+      justify-self: end;
+      margin-right: 0.4rem;
+    }
+    .lightbox__nav--next {
+      grid-column: 1;
+      justify-self: start;
+      margin-left: 0.4rem;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>(".lightbox");
+
+  if (dialog) {
+    const imgEl = dialog.querySelector<HTMLImageElement>(".lightbox__img")!;
+    const captionEl = dialog.querySelector<HTMLElement>(".lightbox__caption")!;
+
+    let group: HTMLImageElement[] = [];
+    let index = 0;
+
+    // Pick the highest-resolution source available: the largest srcset
+    // candidate (about-page <Image> emits these), else the plain src.
+    function bestSrc(img: HTMLImageElement): string {
+      const srcset = img.getAttribute("srcset");
+      if (srcset) {
+        const best = srcset
+          .split(",")
+          .map((part) => {
+            const [url, descriptor] = part.trim().split(/\s+/);
+            return { url, width: parseInt(descriptor ?? "0", 10) || 0 };
+          })
+          .sort((a, b) => b.width - a.width)[0];
+        if (best?.url) return best.url;
+      }
+      return img.currentSrc || img.src;
+    }
+
+    function show(i: number) {
+      const total = group.length;
+      index = (i + total) % total;
+      const source = group[index];
+      imgEl.classList.remove("is-loaded");
+      imgEl.src = bestSrc(source);
+      imgEl.alt = source.alt;
+      captionEl.textContent = source.alt;
+      captionEl.hidden = source.alt.trim() === "";
+      dialog!.toggleAttribute("data-single", total <= 1);
+      if (imgEl.complete) imgEl.classList.add("is-loaded");
+    }
+
+    imgEl.addEventListener("load", () => imgEl.classList.add("is-loaded"));
+
+    function openFrom(trigger: HTMLElement) {
+      const container = trigger.closest("[data-lightbox]");
+      const items = container
+        ? Array.from(
+            container.querySelectorAll<HTMLElement>("[data-lightbox-item]"),
+          )
+        : [trigger];
+      group = items
+        .map((item) => item.querySelector<HTMLImageElement>("img"))
+        .filter((img): img is HTMLImageElement => img !== null);
+      const start = Math.max(0, items.indexOf(trigger));
+      show(start);
+      if (!dialog!.open) dialog!.showModal();
+    }
+
+    document
+      .querySelectorAll<HTMLElement>("[data-lightbox-item]")
+      .forEach((item) => {
+        item.addEventListener("click", () => openFrom(item));
+      });
+
+    dialog
+      .querySelector("[data-close]")
+      ?.addEventListener("click", () => dialog.close());
+    dialog
+      .querySelector("[data-prev]")
+      ?.addEventListener("click", () => show(index - 1));
+    dialog
+      .querySelector("[data-next]")
+      ?.addEventListener("click", () => show(index + 1));
+
+    // A click on the dialog itself (the padding/backdrop area, not the figure
+    // or controls) closes it.
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener("keydown", (event) => {
+      if (group.length <= 1) return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        show(index - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        show(index + 1);
+      }
+    });
+  }
+</script>

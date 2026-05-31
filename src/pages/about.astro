@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Lightbox from "../components/Lightbox.astro";
 import { SOCIALS } from "../consts";
 import { ABOUT_TITLE, ABOUT_DESCRIPTION } from "../utils/page-meta";
 import portrait from "../assets/photos/myself.jpg";
@@ -102,18 +103,24 @@ const gallery = [
 
     <div class="gallery rise" style="--d:0.3s">
       <h2>From the road</h2>
-      <div class="gallery-grid">
+      <div class="gallery-grid" data-lightbox>
         {
           gallery.map((photo) => (
-            <figure style={`--ar:${photo.src.width / photo.src.height}`}>
+            <button
+              type="button"
+              class="shot"
+              data-lightbox-item
+              aria-haspopup="dialog"
+              style={`--ar:${photo.src.width / photo.src.height}`}
+            >
               <Image
                 src={photo.src}
                 alt={photo.alt}
                 format="avif"
-                widths={[280, 420, 560, 800]}
+                widths={[280, 420, 560, 800, 1280]}
                 sizes="(max-width: 34rem) 100vw, 30vw"
               />
-            </figure>
+            </button>
           ))
         }
       </div>
@@ -137,6 +144,8 @@ const gallery = [
       </ul>
     </div>
   </section>
+
+  <Lightbox />
 </BaseLayout>
 
 <style>
@@ -225,26 +234,32 @@ const gallery = [
   .gallery h2 {
     font-size: var(--step-1);
   }
-  /* Justified strip: each figure grows in proportion to its photo's aspect
+  /* Justified strip: each shot grows in proportion to its photo's aspect
      ratio (--ar = width/height) from a zero basis, so every image keeps its
-     full frame yet the row lands on a single even height. */
+     full frame yet the row lands on a single even height. Each is a button
+     that opens the shared lightbox. */
   .gallery-grid {
     margin-top: 1.4rem;
     display: flex;
     gap: 0.7rem;
   }
-  .gallery-grid figure {
+  .gallery-grid .shot {
+    appearance: none;
+    display: block;
+    padding: 0;
     flex: var(--ar) 1 0;
     min-width: 0;
     overflow: hidden;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: zoom-in;
     box-shadow: var(--shadow-sm);
     transition:
       transform 0.25s var(--ease-out),
       box-shadow 0.25s var(--ease-out);
   }
-  .gallery-grid figure:hover {
+  .gallery-grid .shot:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
   }
@@ -258,7 +273,7 @@ const gallery = [
       flex-direction: column;
       gap: 0.8rem;
     }
-    .gallery-grid figure {
+    .gallery-grid .shot {
       flex: none;
     }
   }
