@@ -25,4 +25,9 @@ export const SOCIALS = [
     href: "https://github.com/gpoussel",
     icon: "simple-icons:github",
   },
+  {
+    label: "Bluesky",
+    href: "https://bsky.app/profile/gpoussel.bsky.social",
+    icon: "simple-icons:bluesky",
+  },
 ] as const;
