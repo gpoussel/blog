@@ -10,7 +10,30 @@ const isActive = (href: string) =>
 <header class="site-header">
   <div class="container bar">
     <a href="/" class="brand" aria-label={`${SITE.title} · home`}>
-      <span class="brand-mark" aria-hidden="true"></span>
+      {
+        /* Same mark as favicon.svg: concentric contour ellipses, the topo motif. */
+      }
+      <svg
+        class="brand-mark"
+        viewBox="0 0 32 32"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="32" height="32" rx="7" fill="oklch(0.345 0.05 243)"></rect>
+        <g fill="none" stroke-width="1.4">
+          <path
+            d="M16 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"
+            stroke="oklch(0.805 0.073 334)"></path>
+          <path
+            d="M16 16m-7 0a7 5.5 0 1 0 14 0a7 5.5 0 1 0 -14 0"
+            opacity="0.72"
+            stroke="oklch(0.949 0.006 240)"></path>
+          <path
+            d="M16 16m-11 0a11 8.5 0 1 0 22 0a11 8.5 0 1 0 -22 0"
+            opacity="0.48"
+            stroke="oklch(0.644 0.067 236)"></path>
+        </g>
+      </svg>
       <span class="brand-name">{SITE.title}</span>
     </a>
 
@@ -69,20 +92,16 @@ const isActive = (href: string) =>
     color: var(--ink);
   }
   .brand-mark {
-    inline-size: 0.85rem;
-    block-size: 0.85rem;
-    border-radius: 3px;
-    background: var(--primary);
+    inline-size: 1.6rem;
+    block-size: 1.6rem;
+    border-radius: 6px;
     box-shadow: 0 0 0 3px var(--accent-soft);
-    transform: rotate(45deg);
     transition:
       transform 0.4s var(--ease-out),
-      box-shadow 0.3s var(--ease-out),
-      background 0.3s var(--ease-out);
+      box-shadow 0.3s var(--ease-out);
   }
   .brand:hover .brand-mark {
-    transform: rotate(135deg);
-    background: var(--accent-ink);
+    transform: rotate(12deg);
     box-shadow: 0 0 0 4px var(--accent-soft);
   }
   .brand-name {

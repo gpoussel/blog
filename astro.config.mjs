@@ -3,9 +3,9 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import icon from "astro-icon";
 
-// Replace with your real domain once deployed (used for RSS, sitemap, canonical URLs).
+// Production domain (used for RSS, sitemap, canonical URLs, and OG images).
 export default defineConfig({
-  site: "https://example.com",
+  site: "https://gpoussel.fr",
   integrations: [sitemap(), icon()],
   markdown: {
     shikiConfig: {

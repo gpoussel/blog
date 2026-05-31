@@ -2,19 +2,18 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PostCard from "../components/PostCard.astro";
 import { SITE } from "../consts";
+import { HOME_LEDE } from "../utils/page-meta";
 import { getPublishedPosts } from "../utils/posts";
 
 const posts = await getPublishedPosts();
 const [featured, ...rest] = posts;
 ---
 
-<BaseLayout>
+<BaseLayout ogRoute="home">
   <section class="container intro">
     <p class="eyebrow rise" style="--d:0s">Writing</p>
     <h1 class="intro-title rise" style="--d:0.06s">{SITE.tagline}</h1>
-    <p class="intro-lede rise" style="--d:0.12s">
-      Long pieces, in no hurry, written to understand rather than to conclude.
-    </p>
+    <p class="intro-lede rise" style="--d:0.12s">{HOME_LEDE}</p>
   </section>
 
   {

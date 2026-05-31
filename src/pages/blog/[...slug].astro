@@ -34,7 +34,12 @@ const minutes = readingTime(post.body ?? "");
 const resolvedCover = await resolveCover(cover);
 ---
 
-<BaseLayout title={title} description={description} image={cover} article>
+<BaseLayout
+  title={title}
+  description={description}
+  ogRoute={`blog/${post.id}`}
+  article
+>
   <article class="post">
     <header class="container post-head prose-width">
       <a href="/" class="back">← All writing</a>
