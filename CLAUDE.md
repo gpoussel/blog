@@ -72,3 +72,17 @@ The toolchain (config at the repo root) covers `.astro`, `.js`/`.ts`, JSON, CSS,
 
 - The site is **English**; the eyebrow label marker and other UI text avoid em dashes (`—`) by preference — use commas, colons, or parentheses.
 - Keep changes on-brand per `DESIGN.md` (reading-first, restrained, two equal themes); respect `prefers-reduced-motion` (every animation has a reduced alternative).
+
+## Git commits (tooling gotcha)
+
+- **Multi-line commit messages: don't mix shells.** The PowerShell here-string form (`git commit -m @'…'@`) only works in a PowerShell shell. Running it through a Bash shell passes the `@'` / `'@` delimiters **literally**, leaving a stray `@` on the first and last lines of the message. This has bitten us more than once. Either commit from PowerShell with the here-string, or — when using a Bash shell — feed the message via a heredoc to `-F`:
+
+  ```bash
+  git commit -F - <<'EOF'
+  Subject line
+
+  Body paragraph.
+
+  Co-Authored-By: …
+  EOF
+  ```
