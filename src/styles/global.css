@@ -403,3 +403,96 @@ samp {
 .prose h3:target {
   scroll-margin-top: 6rem;
 }
+
+/* =========================================================================
+   Galleries — the :::gallery directive (1-4 images) inside posts.
+   1/2/3 share one row; 4 is a 2x2 grid. Each tile opens the shared lightbox.
+   ========================================================================= */
+.prose .gallery {
+  display: grid;
+  gap: 0.6rem;
+  margin-block: 2em;
+}
+.prose .gallery[data-count="2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+.prose .gallery[data-count="3"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+.prose .gallery[data-count="4"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.gallery__item {
+  appearance: none;
+  display: block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  overflow: hidden;
+  cursor: zoom-in;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+/* Override the .prose img defaults (margin/border/radius) inside tiles.
+   height:auto lets the aspect-ratio below (multi-image) drive the box. */
+.prose .gallery__item img {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  object-fit: cover;
+}
+/* Multi-image sets crop to a shared ratio so the row lands on one even height;
+   a single image keeps its natural frame. */
+.prose .gallery:not([data-count="1"]) .gallery__item img {
+  aspect-ratio: 4 / 3;
+}
+
+.gallery__item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+/* A maximise cue, fading in on hover/focus (touch users just tap). */
+.gallery__item::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: var(--radius-sm);
+  background-color: oklch(0.2 0.02 244 / 0.62);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E")
+    center / 1rem no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E")
+    center / 1rem no-repeat;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition:
+    opacity 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
+  pointer-events: none;
+}
+.gallery__item:hover::after,
+.gallery__item:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Narrow screens: the 2-up / 3-up rows stack; the 2x2 keeps its shape. */
+@media (max-width: 34rem) {
+  .prose .gallery[data-count="2"],
+  .prose .gallery[data-count="3"] {
+    grid-template-columns: 1fr;
+  }
+  .prose .gallery:not([data-count="1"]) .gallery__item img {
+    aspect-ratio: 16 / 10;
+  }
+}
