@@ -9,29 +9,64 @@ import { SITE, SOCIALS } from "../consts";
 >
   <section class="container about prose-width">
     <p class="eyebrow rise" style="--d:0s">About</p>
-    <h1 class="rise" style="--d:0.06s">Hi, I'm {SITE.author}.</h1>
+    <h1 class="rise" style="--d:0.06s">Hi, I'm Guillaume.</h1>
 
     <div class="lede rise" style="--d:0.12s">
       <p>
-        I work in tech, and I pay close attention to what artificial
-        intelligence actually changes in the way we build and think. This blog
-        is where I take the time to put those thoughts into words, far from the
-        noise of the feeds.
+        I'm a software architect and full-stack developer. For more than a
+        decade I've designed systems for environments where a wrong decision is
+        expensive to undo, which taught me to care less about the newest tool
+        and more about the choices that still make sense a few years later.
       </p>
       <p>
-        Between two pieces on technology, I like to write about the places I
-        travel: the detours, the encounters, what moving around does to thought.
-        So you'll find a deliberate mix of analysis and travel notebook here.
+        This blog is where I slow down. Between client work, side projects, and
+        the open-source code I contribute to when I can, I wanted a place to
+        think in full sentences instead of in pull-request comments, away from
+        the noise of the feeds.
       </p>
       <p>
-        I don't write to be right, but to understand. If a piece speaks to you,
-        or rubs you the wrong way, write to me: the conversation is often worth
-        more than the conclusion.
+        I don't write to be right, but to understand. If something here
+        resonates, or rubs you the wrong way, write to me: the conversation is
+        usually worth more than the conclusion.
       </p>
     </div>
 
-    <div class="links rise" style="--d:0.18s">
-      <h2>Follow me</h2>
+    <div class="topics rise" style="--d:0.18s">
+      <h2>What I write about</h2>
+      <ul>
+        <li>
+          <span class="topic">Programming and architecture</span>
+          <span class="topic-desc">
+            The decisions behind the code, not just the syntax: what holds up,
+            what ages badly, and why.
+          </span>
+        </li>
+        <li>
+          <span class="topic">AI</span>
+          <span class="topic-desc">
+            Less hype, more honest notes on what it actually changes in the way
+            we build and think.
+          </span>
+        </li>
+        <li>
+          <span class="topic">Competitive programming</span>
+          <span class="topic-desc">
+            The problems I solve for the pleasure of it, and what they teach
+            about thinking clearly under constraints.
+          </span>
+        </li>
+        <li>
+          <span class="topic">Travel</span>
+          <span class="topic-desc">
+            Photos and field notes from the road, and what moving around does to
+            the way you see things.
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="links rise" style="--d:0.24s">
+      <h2>Find me</h2>
       <ul>
         {
           SOCIALS.map((s) => (
@@ -67,6 +102,36 @@ import { SITE, SOCIALS } from "../consts";
   .lede > * + * {
     margin-top: 1.2rem;
   }
+  .topics {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .topics h2 {
+    font-size: var(--step-1);
+  }
+  .topics ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.4rem;
+    display: grid;
+    gap: 1.4rem;
+  }
+  .topics li {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .topic {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--step-0);
+    color: var(--primary);
+  }
+  .topic-desc {
+    color: var(--muted);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
   .links {
     margin-top: 3rem;
     padding-top: 2rem;
@@ -95,8 +160,10 @@ import { SITE, SOCIALS } from "../consts";
     padding: 0.55rem 1.1rem;
     border-radius: 999px;
     color: var(--ink);
-    transition: border-color 0.2s var(--ease-out),
-      transform 0.2s var(--ease-out), color 0.2s var(--ease-out);
+    transition:
+      border-color 0.2s var(--ease-out),
+      transform 0.2s var(--ease-out),
+      color 0.2s var(--ease-out);
   }
   .links a:hover {
     color: var(--primary);

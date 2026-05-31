@@ -18,29 +18,29 @@ mauve trop pâles pour du corps de texte) afin de tenir le contraste AA.
 
 ### Thème clair (défaut diurne)
 
-| Rôle    | OKLCH                      | Source / Usage                                   |
-|---------|----------------------------|--------------------------------------------------|
-| bg      | `oklch(0.99 0.004 240)`    | Blanc à peine froid.                             |
-| surface | `oklch(0.949 0.006 240)`   | `#EEEEEE` — cartes, header, code.                |
-| ink     | `oklch(0.3 0.05 244)`      | Ardoise assombrie. ~10:1 sur bg.                 |
-| muted   | `oklch(0.5 0.045 240)`     | Acier assombri. ~4.7:1 sur bg.                   |
-| primary | `oklch(0.345 0.05 243)`    | `#213C51` — liens, titres, marque. ~9:1 sur bg.  |
-| accent  | `oklch(0.805 0.073 334)`   | `#DDAED3` — pills, soulignés, courbes fortes.    |
-| on-accent | `oklch(0.3 0.05 244)`    | Texte ardoise sur le mauve (fond pâle).          |
-| border  | `oklch(0.88 0.006 240)`    | Filets, séparateurs.                             |
+| Rôle      | OKLCH                    | Source / Usage                                  |
+| --------- | ------------------------ | ----------------------------------------------- |
+| bg        | `oklch(0.99 0.004 240)`  | Blanc à peine froid.                            |
+| surface   | `oklch(0.949 0.006 240)` | `#EEEEEE` — cartes, header, code.               |
+| ink       | `oklch(0.3 0.05 244)`    | Ardoise assombrie. ~10:1 sur bg.                |
+| muted     | `oklch(0.5 0.045 240)`   | Acier assombri. ~4.7:1 sur bg.                  |
+| primary   | `oklch(0.345 0.05 243)`  | `#213C51` — liens, titres, marque. ~9:1 sur bg. |
+| accent    | `oklch(0.805 0.073 334)` | `#DDAED3` — pills, soulignés, courbes fortes.   |
+| on-accent | `oklch(0.3 0.05 244)`    | Texte ardoise sur le mauve (fond pâle).         |
+| border    | `oklch(0.88 0.006 240)`  | Filets, séparateurs.                            |
 
 ### Thème sombre
 
-| Rôle    | OKLCH                      | Source / Usage                                   |
-|---------|----------------------------|--------------------------------------------------|
-| bg      | `oklch(0.205 0.028 244)`   | Ardoise très profonde (pas un gris neutre).      |
-| surface | `oklch(0.265 0.04 244)`    | Cartes, encarts (proche `#213C51`).              |
-| ink     | `oklch(0.93 0.006 240)`    | `#EEEEEE` — texte courant.                       |
-| muted   | `oklch(0.71 0.055 237)`    | Acier clair. ≥ 5:1 sur bg.                       |
-| primary | `oklch(0.74 0.07 235)`     | `#6594B1` éclairci — liens, marque.              |
-| accent  | `oklch(0.805 0.075 334)`   | `#DDAED3` — pills, soulignés.                    |
-| on-accent | `oklch(0.22 0.03 245)`   | Texte ardoise sur le mauve.                      |
-| border  | `oklch(0.4 0.035 244)`     | Filets, séparateurs.                             |
+| Rôle      | OKLCH                    | Source / Usage                              |
+| --------- | ------------------------ | ------------------------------------------- |
+| bg        | `oklch(0.205 0.028 244)` | Ardoise très profonde (pas un gris neutre). |
+| surface   | `oklch(0.265 0.04 244)`  | Cartes, encarts (proche `#213C51`).         |
+| ink       | `oklch(0.93 0.006 240)`  | `#EEEEEE` — texte courant.                  |
+| muted     | `oklch(0.71 0.055 237)`  | Acier clair. ≥ 5:1 sur bg.                  |
+| primary   | `oklch(0.74 0.07 235)`   | `#6594B1` éclairci — liens, marque.         |
+| accent    | `oklch(0.805 0.075 334)` | `#DDAED3` — pills, soulignés.               |
+| on-accent | `oklch(0.22 0.03 245)`   | Texte ardoise sur le mauve.                 |
+| border    | `oklch(0.4 0.035 244)`   | Filets, séparateurs.                        |
 
 Règle texte-sur-couleur : le mauve est un fond **pâle**, donc texte **ardoise foncé** dessus
 (pills, badges). Les puces de liste et le filet de citation utilisent la primaire (l'ardoise),

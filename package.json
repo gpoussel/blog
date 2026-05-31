@@ -8,7 +8,18 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:md": "markdownlint-cli2",
+    "lint:content": "tsx scripts/check-frontmatter.ts",
+    "lint": "pnpm format:check && pnpm check && pnpm lint:md && pnpm lint:content",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{astro,js,ts,mjs,cjs,json,jsonc,css,md}": "prettier --write",
+    "src/content/blog/**/*.md": "markdownlint-cli2 --fix"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
@@ -19,6 +30,19 @@
     "@iconify-json/lucide": "^1.2.111",
     "@iconify-json/simple-icons": "^1.2.84",
     "astro": "^6.4.2",
-    "astro-icon": "^1.1.5"
+    "astro-icon": "^1.1.5",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/node": "^25.9.1",
+    "gray-matter": "^4.0.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "markdownlint-cli2": "^0.22.1",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
   }
 }

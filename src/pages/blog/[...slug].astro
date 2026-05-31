@@ -17,8 +17,16 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, updatedDate, category, cover, coverAlt, coverCredit } =
-  post.data;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  category,
+  cover,
+  coverAlt,
+  coverCredit,
+} = post.data;
 const { Content } = await render(post);
 const minutes = readingTime(post.body ?? "");
 ---
@@ -35,9 +43,7 @@ const minutes = readingTime(post.body ?? "");
         <span class="meta-dot">{minutes} min read</span>
         {
           updatedDate && (
-            <span class="meta-dot">
-              updated {formatDate(updatedDate)}
-            </span>
+            <span class="meta-dot">updated {formatDate(updatedDate)}</span>
           )
         }
       </p>
@@ -79,7 +85,9 @@ const minutes = readingTime(post.body ?? "");
     color: var(--muted);
     text-decoration: none;
     margin-bottom: 1.5rem;
-    transition: color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+    transition:
+      color 0.2s var(--ease-out),
+      transform 0.2s var(--ease-out);
   }
   .back:hover {
     color: var(--accent-ink);

@@ -24,7 +24,9 @@ const {
   article = false,
 } = Astro.props;
 
-const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} · ${SITE.tagline}`;
+const pageTitle = title
+  ? `${title} · ${SITE.title}`
+  : `${SITE.title} · ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 const ogImage = image ? new URL(image, Astro.site ?? Astro.url) : undefined;
 ---

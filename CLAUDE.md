@@ -7,13 +7,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This project uses **pnpm** (pinned via `packageManager` in `package.json`). Do not introduce `package-lock.json`.
 
 ```bash
-pnpm install      # install dependencies
+pnpm install      # install dependencies (also sets up the Husky git hooks)
 pnpm dev          # dev server on http://localhost:4321
 pnpm build        # static build into dist/
 pnpm preview      # preview the production build
+
+pnpm lint         # everything CI runs: format check + astro check + Markdown + frontmatter
+pnpm format       # auto-format the whole repo with Prettier
+pnpm check        # astro check only (types / diagnostics)
+pnpm lint:md      # markdownlint-cli2 on src/content/blog/**/*.md
+pnpm lint:content # validate post frontmatter against the schema
 ```
 
-There is no test runner or linter configured. Type safety comes from `tsconfig.json` (extends `astro/tsconfigs/strict`); there is no standalone `check` script wired up (Astro's `astro check` would require adding `@astrojs/check`).
+**Linting is enforced, not optional.** `pnpm lint` is exactly what the `Lint` GitHub Actions workflow runs, and it is a **required status check on `main`**, so a PR cannot merge unless it passes. It chains Prettier (`--check`), `astro check` (type/diagnostics, via `@astrojs/check`, the source of type safety alongside `tsconfig.json` which extends `astro/tsconfigs/strict`), `markdownlint-cli2`, and the frontmatter validator. There is no unit-test runner.
 
 ## Architecture
 
@@ -21,19 +27,44 @@ A static personal blog built with **Astro 6** (output: `static`). English-langua
 
 **Single source of truth for identity** is `src/consts.ts`: `SITE` (title, tagline, description, `lang`), `NAV`, and `SOCIALS` (each social carries an iconify `icon` name). Most user-facing chrome reads from here rather than hardcoding strings.
 
-**Content is a typed collection.** Posts are Markdown in `src/content/blog/`, loaded by the glob loader and validated against the Zod schema in `src/content.config.ts`. The filename becomes the URL slug (`/blog/<filename>/`). The collection may be empty (demo posts were removed) — the build then prints harmless "collection blog is empty" warnings until posts are added. Never read the collection directly in pages; go through `src/utils/posts.ts`:
+**Content is a typed collection.** Posts are Markdown in `src/content/blog/`, loaded by the glob loader and validated against the Zod schema in `src/schemas/post.ts` (wired into the collection by `src/content.config.ts`, and reused by the frontmatter linter so the "expected header" has one definition). The filename becomes the URL slug (`/blog/<filename>/`). The collection may be empty (demo posts were removed) — the build then prints harmless "collection blog is empty" warnings until posts are added. Never read the collection directly in pages; go through `src/utils/posts.ts`:
+
 - `getPublishedPosts()` — newest-first, excludes `draft: true` in production. Used by the home page, `blog/[...slug].astro` (`getStaticPaths`), and `rss.xml.js`.
 - `readingTime()` and `formatDate()` (locale `en-US`) for post metadata.
 
 **Pages** (`src/pages/`): `index.astro`, `about.astro`, `blog/[...slug].astro`, `rss.xml.js`. All wrap `layouts/BaseLayout.astro`, which sets `<head>`, SEO/OG tags, and the canonical URL. The `site` field in `astro.config.mjs` (currently the placeholder `https://example.com`) feeds canonical URLs, RSS, and the sitemap — update it on deploy.
 
-**Theming is FOUC-free.** `BaseLayout.astro` runs an inline `<script>` in `<head>` that sets `data-theme` from `localStorage` (falling back to `prefers-color-scheme`) *before first paint*. `components/ThemeToggle.astro` flips and persists it. Both `:root` and `:root[data-theme="dark"]` token sets live in `src/styles/global.css`.
+**Theming is FOUC-free.** `BaseLayout.astro` runs an inline `<script>` in `<head>` that sets `data-theme` from `localStorage` (falling back to `prefers-color-scheme`) _before first paint_. `components/ThemeToggle.astro` flips and persists it. Both `:root` and `:root[data-theme="dark"]` token sets live in `src/styles/global.css`.
 
 **The design system lives in `src/styles/global.css`** as OKLCH custom properties (color, fluid type scale, spacing, motion easings, z-index scale). `DESIGN.md` is the authoritative visual spec and `PRODUCT.md` the brand/voice brief — consult them before changing visuals; the palette strategy is intentionally "restrained" (cool slate primary, mauve accent ≤10%).
 
 **`components/TopoBackground.astro`** generates the contour-line background at build time: fBm value-noise field → marching squares → stitched, smoothed SVG polylines. It is deliberately **deterministic** (no `Math.random`/`Date.now`) so builds are reproducible — preserve that if editing. It is purely decorative (`aria-hidden`, `position: fixed`, very low opacity).
 
 **Icons** use `astro-icon` (integration registered in `astro.config.mjs`). Reference iconify names: brand logos from `@iconify-json/simple-icons` (e.g. `simple-icons:github`), UI glyphs from `@iconify-json/lucide` (e.g. `lucide:coffee`). Icons render as inline SVG using `currentColor`.
+
+## Deployment & CI
+
+**Auto-deploy is GitHub Actions, defined in `.github/workflows/deploy.yml`.** On every push to `main` (and via manual `workflow_dispatch`) it builds with pnpm and uploads `dist/` to an SFTP server using native `lftp` + `sshpass` (no third-party deploy action). It is deliberately hardened for a public repo, preserve all of this if you touch the workflow:
+
+- No `pull_request` trigger and a `if: github.repository == 'gpoussel/blog'` fork guard, so PRs and forks can never deploy or read secrets.
+- Secrets live in the protected **`production` environment** (branch policy: `main` only), not at repo level: `SFTP_HOST`, `SFTP_PORT`, `SFTP_USERNAME`, `SFTP_PASSWORD`, `SFTP_TARGET_DIR`, `SFTP_KNOWN_HOSTS`. The README documents the one-time setup.
+- Least-privilege token (`permissions: contents: read`), third-party actions **pinned by commit SHA** (pin any new action you add), and strict SFTP host-key verification via `SFTP_KNOWN_HOSTS` (do not switch to `StrictHostKeyChecking=no`).
+- The upload uses `mirror --delete`, so the remote becomes an exact copy of `dist/` (remote-only files are removed). Drop `--delete` only if the target dir holds files that must survive.
+
+**`main` is protected by GitHub rulesets** (configured server-side, not in the repo): commits must be **signed and verified**, changes must land via **pull request**, and force-pushes / deletions are blocked. Practical consequences when working here:
+
+- Commit signing is required. SSH commit signing is set up globally on this machine, so commits are signed automatically; a new environment must configure `commit.gpgsign`/`gpg.format=ssh` and register the public key on GitHub, or pushes to `main` are rejected.
+- Never rewrite published `main` history. Doing so needs the protections temporarily lifted (a privileged, hard-to-reverse step) and auto-closes open PRs; merge via a PR instead. GitHub signs the merge commit itself (web-flow), so it satisfies the signature rule.
+
+## Linting & formatting
+
+The toolchain (config at the repo root) covers `.astro`, `.js`/`.ts`, JSON, CSS, and Markdown:
+
+- **Prettier owns all formatting** (`.prettierrc.json` registers `prettier-plugin-astro`; `.prettierignore` excludes `dist`, `node_modules`, `.astro`, the lockfile). Run `pnpm format` after edits. `.editorconfig` mirrors the same whitespace rules for editors.
+- **`astro check`** (`@astrojs/check`) is the type/diagnostics pass over `.astro`/`.ts`. Ambient module declarations for type-less side-effect imports live in `src/env.d.ts` (e.g. the `@fontsource-variable/*` CSS packages); add to it rather than disabling the check.
+- **Markdown is linted two ways**: `markdownlint-cli2` (`.markdownlint-cli2.jsonc`, scoped to `src/content/blog/**/*.md`) checks _content_ correctness, with formatting rules disabled so it never fights Prettier; `scripts/check-frontmatter.ts` validates each post's _frontmatter_ against `src/schemas/post.ts` via `gray-matter` + Zod. Keep that schema the single source of truth (the Astro collection imports the same file).
+- **Git hooks via Husky** (`.husky/`, installed by the `prepare` script on `pnpm install`): `pre-commit` runs `lint-staged` (Prettier, plus `markdownlint --fix` on blog Markdown); `pre-push` runs the non-format checks. Don't bypass with `--no-verify`.
+- Scope is **format + types + Markdown**, not full code-style linting. If stricter JS/TS rules are wanted later, add ESLint (`eslint-plugin-astro` + `typescript-eslint`) as another step in the `lint` script and the `Lint` workflow.
 
 ## Conventions
 
