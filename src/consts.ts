@@ -2,7 +2,7 @@
 
 export const SITE = {
   title: "Guillaume Poussel",
-  tagline: "Notes on technology, AI, and the roads less traveled",
+  tagline: "On technology and the road less traveled",
   description:
     "A personal notebook: measured reflections on technology, artificial intelligence, and travel.",
   author: "Guillaume Poussel",
