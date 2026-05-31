@@ -4,7 +4,7 @@ export const SITE = {
   title: "Guillaume Poussel",
   tagline: "On technology and the road less traveled",
   description:
-    "A personal notebook: measured reflections on technology, artificial intelligence, and travel.",
+    "A personal notebook by Guillaume Poussel: measured, unhurried reflections on technology, software architecture, AI, and the road less traveled.",
   author: "Guillaume Poussel",
   lang: "en",
 } as const;
