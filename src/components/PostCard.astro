@@ -1,0 +1,136 @@
+---
+import type { Post } from "../utils/posts";
+import { formatDate, readingTime } from "../utils/posts";
+
+interface Props {
+  post: Post;
+  featured?: boolean;
+  index?: number;
+}
+
+const { post, featured = false, index = 0 } = Astro.props;
+const { title, description, pubDate, category, cover, coverAlt } = post.data;
+const href = `/blog/${post.id}/`;
+const minutes = readingTime(post.body ?? "");
+---
+
+<article
+  class:list={["card", { featured }]}
+  style={`--d:${0.06 * index + 0.05}s`}
+>
+  <a class="card-link" href={href} aria-label={title}>
+    <div class="thumb">
+      <img
+        src={cover}
+        alt={coverAlt}
+        loading={featured ? "eager" : "lazy"}
+        decoding="async"
+        width="800"
+        height="500"
+      />
+      <span class="pill cat">{category}</span>
+    </div>
+    <div class="body">
+      <h2 class="title">{title}</h2>
+      <p class="excerpt">{description}</p>
+      <p class="meta foot">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        <span class="meta-dot">{minutes} min read</span>
+      </p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    animation: rise 0.7s var(--ease-out) both;
+    animation-delay: var(--d, 0s);
+  }
+  .card-link {
+    display: grid;
+    gap: 1.1rem;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+  .thumb {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    aspect-ratio: 16 / 10;
+    background: var(--surface);
+    transition: border-color 0.3s var(--ease-out),
+      box-shadow 0.4s var(--ease-out);
+  }
+  .card-link:hover .thumb {
+    border-color: var(--accent);
+    box-shadow: 0 12px 34px var(--accent-soft);
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .card-link:hover .thumb img {
+    transform: scale(1.04);
+  }
+  .pill.cat {
+    position: absolute;
+    left: 0.8rem;
+    bottom: 0.8rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .title {
+    font-size: var(--step-1);
+    letter-spacing: -0.02em;
+    transition: color 0.2s var(--ease-out);
+  }
+  .card-link:hover .title {
+    color: var(--accent-ink);
+  }
+  .excerpt {
+    color: var(--muted);
+    font-size: var(--step-0);
+    line-height: 1.55;
+    margin-top: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .foot {
+    margin-top: 0.85rem;
+  }
+
+  /* Featured variant: image and text side by side, more generous. */
+  .card.featured .card-link {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  .card.featured .thumb {
+    aspect-ratio: 16 / 11;
+  }
+  .card.featured .title {
+    font-size: var(--step-3);
+    line-height: 1.08;
+  }
+  .card.featured .excerpt {
+    font-size: var(--step-1);
+    font-family: var(--font-body);
+    line-clamp: 4;
+    -webkit-line-clamp: 4;
+  }
+  @media (max-width: 46rem) {
+    .card.featured .card-link {
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+    .card.featured .title {
+      font-size: var(--step-2);
+    }
+  }
+</style>

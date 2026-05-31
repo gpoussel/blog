@@ -1,0 +1,118 @@
+---
+import { Icon } from "astro-icon/components";
+import { SOCIALS } from "../consts";
+---
+
+<footer class="site-footer">
+  <div class="container row">
+    <p class="copy">
+      <span>Brewed slowly with</span>
+      <a
+        href="https://astro.build"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="astro-link"
+      >
+        <Icon name="simple-icons:astro" class="astro-mark" aria-hidden="true" />
+        Astro
+      </a>
+      <span>and</span>
+      <Icon name="lucide:coffee" class="cup" aria-label="coffee" role="img" />
+    </p>
+    <nav class="socials" aria-label="Social links">
+      {
+        SOCIALS.map((s) => (
+          <a
+            href={s.href}
+            target="_blank"
+            rel="me noopener noreferrer"
+            aria-label={s.label}
+            title={s.label}
+          >
+            <Icon name={s.icon} aria-hidden="true" />
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 6rem;
+    border-top: 1px solid var(--border);
+    padding-block: 2rem;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .copy a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+  .copy a:hover {
+    color: var(--primary);
+  }
+  .copy a:focus-visible {
+    outline: none;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--ring);
+  }
+  .copy .astro-mark {
+    inline-size: 1.05em;
+    block-size: 1.05em;
+  }
+  .copy .cup {
+    inline-size: 1.05em;
+    block-size: 1.05em;
+    color: var(--muted);
+  }
+  .socials {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .socials a {
+    display: grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    border-radius: 999px;
+    color: var(--muted);
+    transition: color 0.2s var(--ease-out),
+      background 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  }
+  .socials a:hover {
+    color: var(--primary);
+    background: var(--primary-soft);
+    transform: translateY(-1px);
+  }
+  .socials a:focus-visible {
+    outline: none;
+    box-shadow: var(--ring);
+  }
+  .socials [data-icon] {
+    inline-size: 1.2rem;
+    block-size: 1.2rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .socials a:hover {
+      transform: none;
+    }
+  }
+</style>
