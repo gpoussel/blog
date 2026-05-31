@@ -31,11 +31,3 @@ export async function resolveCover(cover: string): Promise<ResolvedCover> {
   }
   return { local: (await loader()).default };
 }
-
-/** True if a local photo exists, without throwing (used for optional images). */
-export async function tryResolveLocal(
-  name: string,
-): Promise<ImageMetadata | null> {
-  const loader = localPhotos[`/src/assets/photos/${name}`];
-  return loader ? (await loader()).default : null;
-}
