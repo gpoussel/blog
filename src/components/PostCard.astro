@@ -1,6 +1,8 @@
 ---
+import { Image } from "astro:assets";
 import type { Post } from "../utils/posts";
 import { formatDate, readingTime } from "../utils/posts";
+import { resolveCover } from "../utils/cover";
 
 interface Props {
   post: Post;
@@ -12,6 +14,8 @@ const { post, featured = false, index = 0 } = Astro.props;
 const { title, description, pubDate, category, cover, coverAlt } = post.data;
 const href = `/blog/${post.id}/`;
 const minutes = readingTime(post.body ?? "");
+const resolvedCover = await resolveCover(cover);
+const loading = featured ? "eager" : "lazy";
 ---
 
 <article
@@ -20,14 +24,28 @@ const minutes = readingTime(post.body ?? "");
 >
   <a class="card-link" href={href} aria-label={title}>
     <div class="thumb">
-      <img
-        src={cover}
-        alt={coverAlt}
-        loading={featured ? "eager" : "lazy"}
-        decoding="async"
-        width="800"
-        height="500"
-      />
+      {
+        "local" in resolvedCover ? (
+          <Image
+            src={resolvedCover.local}
+            alt={coverAlt}
+            format="avif"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 46rem) 100vw, 50vw"
+            loading={loading}
+            decoding="async"
+          />
+        ) : (
+          <img
+            src={resolvedCover.remote}
+            alt={coverAlt}
+            loading={loading}
+            decoding="async"
+            width="800"
+            height="500"
+          />
+        )
+      }
       <span class="pill cat">{category}</span>
     </div>
     <div class="body">
