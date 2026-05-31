@@ -1,0 +1,128 @@
+---
+import { SITE, NAV } from "../consts";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="brand" aria-label={`${SITE.title} · home`}>
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">{SITE.title}</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            class:list={["nav-link", { active: isActive(item.href) }]}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: color-mix(in oklch, var(--bg) 86%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+  }
+  /* signature bar: slate -> mauve */
+  .site-header::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--primary),
+      var(--accent) 55%,
+      var(--accent-ink)
+    );
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.2rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .brand-mark {
+    inline-size: 0.85rem;
+    block-size: 0.85rem;
+    border-radius: 3px;
+    background: var(--primary);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    transform: rotate(45deg);
+    transition: transform 0.4s var(--ease-out), box-shadow 0.3s var(--ease-out),
+      background 0.3s var(--ease-out);
+  }
+  .brand:hover .brand-mark {
+    transform: rotate(135deg);
+    background: var(--accent-ink);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .brand-name {
+    font-family: var(--font-ui);
+    font-weight: 680;
+    font-size: 1.02rem;
+    letter-spacing: -0.01em;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.6rem, 2vw, 1.4rem);
+  }
+  .nav-link {
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    font-weight: 520;
+    color: var(--muted);
+    text-decoration: none;
+    position: relative;
+    padding-block: 0.2rem;
+    transition: color 0.2s var(--ease-out);
+  }
+  .nav-link:hover {
+    color: var(--ink);
+  }
+  .nav-link.active {
+    color: var(--ink);
+  }
+  .nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.15rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-ink);
+  }
+  @media (max-width: 30rem) {
+    .brand-name {
+      display: none;
+    }
+  }
+</style>

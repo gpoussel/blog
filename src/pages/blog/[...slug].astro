@@ -1,0 +1,131 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPublishedPosts, formatDate, readingTime } from "../../utils/posts";
+import type { Post } from "../../utils/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, category, cover, coverAlt, coverCredit } =
+  post.data;
+const { Content } = await render(post);
+const minutes = readingTime(post.body ?? "");
+---
+
+<BaseLayout title={title} description={description} image={cover} article>
+  <article class="post">
+    <header class="container post-head prose-width">
+      <a href="/" class="back">← All writing</a>
+      <p class="pill">{category}</p>
+      <h1 class="post-title">{title}</h1>
+      <p class="post-desc">{description}</p>
+      <p class="meta post-meta">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        <span class="meta-dot">{minutes} min read</span>
+        {
+          updatedDate && (
+            <span class="meta-dot">
+              updated {formatDate(updatedDate)}
+            </span>
+          )
+        }
+      </p>
+    </header>
+
+    <figure class="container cover">
+      <img
+        src={cover}
+        alt={coverAlt}
+        width="1280"
+        height="720"
+        fetchpriority="high"
+      />
+      {coverCredit && <figcaption>{coverCredit}</figcaption>}
+    </figure>
+
+    <div class="container">
+      <div class="prose prose-width">
+        <Content />
+      </div>
+    </div>
+
+    <footer class="container post-foot prose-width">
+      <a href="/" class="back">← Back to writing</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-head {
+    padding-top: clamp(2rem, 5vw, 3.5rem);
+    text-align: left;
+  }
+  .back {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    font-weight: 540;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  }
+  .back:hover {
+    color: var(--accent-ink);
+    transform: translateX(-3px);
+  }
+  .post-title {
+    font-size: var(--step-4);
+    letter-spacing: -0.03em;
+    margin-top: 0.9rem;
+    line-height: 1.06;
+  }
+  .post-desc {
+    margin-top: 1.1rem;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .post-meta {
+    margin-top: 1.3rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .cover {
+    margin-top: clamp(1.8rem, 4vw, 2.8rem);
+    margin-bottom: clamp(2rem, 5vw, 3.2rem);
+  }
+  .cover img {
+    width: 100%;
+    max-height: 30rem;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+  }
+  .cover figcaption {
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-align: center;
+    margin-top: 0.7rem;
+  }
+
+  .post-foot {
+    margin-top: 3.5rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--border);
+  }
+</style>

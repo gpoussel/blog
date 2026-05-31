@@ -1,0 +1,112 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE, SOCIALS } from "../consts";
+---
+
+<BaseLayout
+  title="About"
+  description={`Who's behind ${SITE.title}: a short biography.`}
+>
+  <section class="container about prose-width">
+    <p class="eyebrow rise" style="--d:0s">About</p>
+    <h1 class="rise" style="--d:0.06s">Hi, I'm {SITE.author}.</h1>
+
+    <div class="lede rise" style="--d:0.12s">
+      <p>
+        I work in tech, and I pay close attention to what artificial
+        intelligence actually changes in the way we build and think. This blog
+        is where I take the time to put those thoughts into words, far from the
+        noise of the feeds.
+      </p>
+      <p>
+        Between two pieces on technology, I like to write about the places I
+        travel: the detours, the encounters, what moving around does to thought.
+        So you'll find a deliberate mix of analysis and travel notebook here.
+      </p>
+      <p>
+        I don't write to be right, but to understand. If a piece speaks to you,
+        or rubs you the wrong way, write to me: the conversation is often worth
+        more than the conclusion.
+      </p>
+    </div>
+
+    <div class="links rise" style="--d:0.18s">
+      <h2>Follow me</h2>
+      <ul>
+        {
+          SOCIALS.map((s) => (
+            <li>
+              <a href={s.href} target="_blank" rel="me noopener noreferrer">
+                {s.label}
+                <span class="arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-top: clamp(3rem, 8vw, 5.5rem);
+  }
+  .about h1 {
+    font-size: var(--step-4);
+    letter-spacing: -0.03em;
+    margin-top: 0.4rem;
+  }
+  .lede {
+    margin-top: 1.8rem;
+    font-size: var(--step-1);
+    line-height: 1.7;
+  }
+  .lede > * + * {
+    margin-top: 1.2rem;
+  }
+  .links {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .links h2 {
+    font-size: var(--step-1);
+  }
+  .links ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-ui);
+    font-weight: 560;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    color: var(--ink);
+    transition: border-color 0.2s var(--ease-out),
+      transform 0.2s var(--ease-out), color 0.2s var(--ease-out);
+  }
+  .links a:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+  }
+  .arrow {
+    transition: transform 0.2s var(--ease-out);
+  }
+  .links a:hover .arrow {
+    transform: translate(2px, -2px);
+  }
+</style>
