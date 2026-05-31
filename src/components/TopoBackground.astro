@@ -94,7 +94,10 @@ function contourSegments(L: number): [Pt, Pt][] {
       const vc = grid[r + 1][c + 1]; // bas-droit
       const vd = grid[r + 1][c]; // bas-gauche
       const idx =
-        (va > L ? 8 : 0) | (vb > L ? 4 : 0) | (vc > L ? 2 : 0) | (vd > L ? 1 : 0);
+        (va > L ? 8 : 0) |
+        (vb > L ? 4 : 0) |
+        (vc > L ? 2 : 0) |
+        (vd > L ? 1 : 0);
       if (idx === 0 || idx === 15) continue;
       const x = c * CELL;
       const y = r * CELL;
@@ -103,20 +106,50 @@ function contourSegments(L: number): [Pt, Pt][] {
       const B: Pt = [x + lerp(vd, vc, L) * CELL, y + CELL];
       const Lp: Pt = [x, y + lerp(va, vd, L) * CELL];
       switch (idx) {
-        case 1: segs.push([Lp, B]); break;
-        case 2: segs.push([B, R]); break;
-        case 3: segs.push([Lp, R]); break;
-        case 4: segs.push([T, R]); break;
-        case 5: segs.push([T, Lp]); segs.push([B, R]); break;
-        case 6: segs.push([T, B]); break;
-        case 7: segs.push([T, Lp]); break;
-        case 8: segs.push([T, Lp]); break;
-        case 9: segs.push([T, B]); break;
-        case 10: segs.push([T, R]); segs.push([Lp, B]); break;
-        case 11: segs.push([T, R]); break;
-        case 12: segs.push([Lp, R]); break;
-        case 13: segs.push([B, R]); break;
-        case 14: segs.push([Lp, B]); break;
+        case 1:
+          segs.push([Lp, B]);
+          break;
+        case 2:
+          segs.push([B, R]);
+          break;
+        case 3:
+          segs.push([Lp, R]);
+          break;
+        case 4:
+          segs.push([T, R]);
+          break;
+        case 5:
+          segs.push([T, Lp]);
+          segs.push([B, R]);
+          break;
+        case 6:
+          segs.push([T, B]);
+          break;
+        case 7:
+          segs.push([T, Lp]);
+          break;
+        case 8:
+          segs.push([T, Lp]);
+          break;
+        case 9:
+          segs.push([T, B]);
+          break;
+        case 10:
+          segs.push([T, R]);
+          segs.push([Lp, B]);
+          break;
+        case 11:
+          segs.push([T, R]);
+          break;
+        case 12:
+          segs.push([Lp, R]);
+          break;
+        case 13:
+          segs.push([B, R]);
+          break;
+        case 14:
+          segs.push([Lp, B]);
+          break;
       }
     }
   }

@@ -23,10 +23,10 @@ title: "Post title"
 description: "Summary shown in listings and for SEO."
 pubDate: 2026-05-31
 category: "artificial intelligence"
-cover: "https://images.unsplash.com/photo-..."   # stock photo or /local/path
+cover: "https://images.unsplash.com/photo-..." # stock photo or /local/path
 coverAlt: "Image description for accessibility"
 coverCredit: "Photo credit (optional)"
-draft: false                                       # true = hidden in production
+draft: false # true = hidden in production
 ---
 
 Your **Markdown** content...

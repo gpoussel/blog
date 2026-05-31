@@ -1,0 +1,14 @@
+{
+  // Markdown content correctness for blog posts. Prettier owns formatting
+  // (line wrapping, list markers), so formatting-oriented rules are disabled
+  // here to avoid the two tools fighting each other.
+  "config": {
+    "default": true,
+    "MD013": false, // line length: Prettier handles wrapping
+    "MD024": { "siblings_only": true }, // allow repeated headings in different sections
+    "MD033": false, // allow inline HTML (used in rich Markdown)
+    "MD041": false, // first line need not be a top-level heading (frontmatter precedes it)
+  },
+  "globs": ["src/content/blog/**/*.md"],
+  "ignores": ["node_modules", "dist", ".astro"],
+}
