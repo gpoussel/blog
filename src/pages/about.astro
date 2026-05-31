@@ -1,7 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SITE, SOCIALS } from "../consts";
+import { SOCIALS } from "../consts";
+import { ABOUT_TITLE, ABOUT_DESCRIPTION } from "../utils/page-meta";
 import portrait from "../assets/photos/myself.jpg";
 import aboutCerbere from "../assets/photos/about-cerbere.jpg";
 import aboutFlower from "../assets/photos/about-flower.jpg";
@@ -26,10 +27,7 @@ const gallery = [
 ];
 ---
 
-<BaseLayout
-  title="About: software architect and writer"
-  description={`Who's behind the blog: ${SITE.title}, a software architect and full-stack developer writing measured, unhurried notes on technology, AI, and travel.`}
->
+<BaseLayout title={ABOUT_TITLE} description={ABOUT_DESCRIPTION} ogRoute="about">
   <section class="container about prose-width">
     <div class="intro">
       <figure class="portrait rise" style="--d:0s">
