@@ -1,8 +1,10 @@
 ---
 import { render } from "astro:content";
+import { Image } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getPublishedPosts, formatDate, readingTime } from "../../utils/posts";
 import type { Post } from "../../utils/posts";
+import { resolveCover } from "../../utils/cover";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -29,6 +31,7 @@ const {
 } = post.data;
 const { Content } = await render(post);
 const minutes = readingTime(post.body ?? "");
+const resolvedCover = await resolveCover(cover);
 ---
 
 <BaseLayout title={title} description={description} image={cover} article>
@@ -50,13 +53,27 @@ const minutes = readingTime(post.body ?? "");
     </header>
 
     <figure class="container cover">
-      <img
-        src={cover}
-        alt={coverAlt}
-        width="1280"
-        height="720"
-        fetchpriority="high"
-      />
+      {
+        "local" in resolvedCover ? (
+          <Image
+            src={resolvedCover.local}
+            alt={coverAlt}
+            format="avif"
+            widths={[640, 1024, 1280, 1920]}
+            sizes="(max-width: 70rem) 100vw, 70rem"
+            loading="eager"
+            fetchpriority="high"
+          />
+        ) : (
+          <img
+            src={resolvedCover.remote}
+            alt={coverAlt}
+            width="1280"
+            height="720"
+            fetchpriority="high"
+          />
+        )
+      }
       {coverCredit && <figcaption>{coverCredit}</figcaption>}
     </figure>
 

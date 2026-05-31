@@ -1,6 +1,29 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE, SOCIALS } from "../consts";
+import portrait from "../assets/photos/myself.jpg";
+import aboutCerbere from "../assets/photos/about-cerbere.jpg";
+import aboutFlower from "../assets/photos/about-flower.jpg";
+import aboutStremy from "../assets/photos/about-stremy.jpg";
+
+// A few photos from the road, shown as a justified strip lower on the page,
+// kept apart from the portrait above. Aspect ratios drive the column widths
+// (see .gallery-grid), so the row stays even-height without hardcoded numbers.
+const gallery = [
+  {
+    src: aboutCerbere,
+    alt: "The harbour at Cerbère, where the Pyrenees drop into the Mediterranean.",
+  },
+  {
+    src: aboutFlower,
+    alt: "A pink flower spike standing out against dense, sunlit greenery.",
+  },
+  {
+    src: aboutStremy,
+    alt: "A shaded courtyard terrace, cypress and olive around a still water channel.",
+  },
+];
 ---
 
 <BaseLayout
@@ -8,10 +31,24 @@ import { SITE, SOCIALS } from "../consts";
   description={`Who's behind ${SITE.title}: a short biography.`}
 >
   <section class="container about prose-width">
-    <p class="eyebrow rise" style="--d:0s">About</p>
-    <h1 class="rise" style="--d:0.06s">Hi, I'm Guillaume.</h1>
+    <div class="intro">
+      <figure class="portrait rise" style="--d:0s">
+        <Image
+          src={portrait}
+          alt="Portrait of Guillaume"
+          format="avif"
+          widths={[80, 160, 240]}
+          sizes="5rem"
+          loading="eager"
+        />
+      </figure>
+      <div class="intro-text">
+        <p class="eyebrow rise" style="--d:0.06s">About</p>
+        <h1 class="rise" style="--d:0.12s">Hi, I'm Guillaume.</h1>
+      </div>
+    </div>
 
-    <div class="lede rise" style="--d:0.12s">
+    <div class="lede rise" style="--d:0.18s">
       <p>
         I'm a software architect and full-stack developer. For more than a
         decade I've designed systems for environments where a wrong decision is
@@ -31,7 +68,7 @@ import { SITE, SOCIALS } from "../consts";
       </p>
     </div>
 
-    <div class="topics rise" style="--d:0.18s">
+    <div class="topics rise" style="--d:0.24s">
       <h2>What I write about</h2>
       <ul>
         <li>
@@ -65,7 +102,26 @@ import { SITE, SOCIALS } from "../consts";
       </ul>
     </div>
 
-    <div class="links rise" style="--d:0.24s">
+    <div class="gallery rise" style="--d:0.3s">
+      <h2>From the road</h2>
+      <div class="gallery-grid">
+        {
+          gallery.map((photo) => (
+            <figure style={`--ar:${photo.src.width / photo.src.height}`}>
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                format="avif"
+                widths={[280, 420, 560, 800]}
+                sizes="(max-width: 34rem) 100vw, 30vw"
+              />
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="links rise" style="--d:0.36s">
       <h2>Find me</h2>
       <ul>
         {
@@ -93,6 +149,37 @@ import { SITE, SOCIALS } from "../consts";
     font-size: var(--step-4);
     letter-spacing: -0.03em;
     margin-top: 0.4rem;
+  }
+  /* A small portrait beside the title. On wide screens it hangs in the left
+     gutter (negative margin), so the heading lines up with the body text below;
+     on narrow screens it simply sits inline, just left of the title. */
+  .intro {
+    --portrait-size: clamp(3.25rem, 8vw, 4.75rem);
+    --intro-gap: clamp(0.85rem, 2.5vw, 1.35rem);
+    display: flex;
+    align-items: center;
+    gap: var(--intro-gap);
+  }
+  .intro-text {
+    min-width: 0;
+  }
+  .portrait {
+    flex: none;
+    width: var(--portrait-size);
+  }
+  .portrait img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  @media (min-width: 64rem) {
+    .intro {
+      margin-left: calc(-1 * (var(--portrait-size) + var(--intro-gap)));
+    }
   }
   .lede {
     margin-top: 1.8rem;
@@ -131,6 +218,51 @@ import { SITE, SOCIALS } from "../consts";
     color: var(--muted);
     line-height: 1.6;
     text-wrap: pretty;
+  }
+  .gallery {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .gallery h2 {
+    font-size: var(--step-1);
+  }
+  /* Justified strip: each figure grows in proportion to its photo's aspect
+     ratio (--ar = width/height) from a zero basis, so every image keeps its
+     full frame yet the row lands on a single even height. */
+  .gallery-grid {
+    margin-top: 1.4rem;
+    display: flex;
+    gap: 0.7rem;
+  }
+  .gallery-grid figure {
+    flex: var(--ar) 1 0;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out);
+  }
+  .gallery-grid figure:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .gallery-grid img {
+    width: 100%;
+    height: auto;
+  }
+  /* Too narrow for a three-up strip: stack to full-width frames instead. */
+  @media (max-width: 34rem) {
+    .gallery-grid {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .gallery-grid figure {
+      flex: none;
+    }
   }
   .links {
     margin-top: 3rem;

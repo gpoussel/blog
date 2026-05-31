@@ -1,0 +1,2 @@
+# Processed master photos land here (via `pnpm photo`).
+# astro:assets reads them and emits responsive AVIF derivatives at build.
