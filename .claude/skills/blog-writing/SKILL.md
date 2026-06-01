@@ -88,6 +88,72 @@ The filename resolves to `src/assets/photos/`, the same convention as the post's
 
 The alt text does double duty. It's the caption shown under the enlarged photo, and it's what a screen reader reads. So it's real copy: write it in the house voice, specific and plain ("The harbour at Cerbère, where the Pyrenees drop into the Mediterranean"), not a label ("harbour photo"). And resist padding. One honest photo that earns its place beats four that fill space.
 
+## Charts
+
+Data goes in a `:::chart` block holding one `yaml` code fence that describes the chart. It renders to a static SVG at build time, so it carries no runtime JS and re-themes with the page (light/dark) automatically, using the site's fonts and a brand palette (slate, steel, mauve). Five `type`s exist: `bar` (grouped), `stacked-bar`, `line`, `area`, `donut`.
+
+````markdown
+:::chart
+
+```yaml
+type: stacked-bar
+title: Energy mix by year
+unit: "%"
+x: [2019, 2022, 2025]
+series:
+  - name: Renewables
+    data: [22, 31, 44]
+  - name: Gas
+    data: [40, 38, 32]
+  - name: Coal
+    data: [38, 31, 24]
+```
+
+:::
+````
+
+The fields:
+
+- `type` (required): `bar`, `stacked-bar`, `line`, `area`, or `donut`.
+- `title` (optional): a heading shown above the chart, in the UI font.
+- `caption` (optional): a line under the chart, like a figure caption.
+- `unit` (optional): appended to value labels, e.g. `"%"`, `" h"`, `"k€"`. Omit it for plain numbers. There's nothing percentage-specific: a stacked bar without `unit` just shows raw totals.
+
+For `bar`, `stacked-bar`, `line`, and `area`:
+
+- `x` (required): the category or time labels along the bottom axis.
+- `series` (required): a list of `{ name, data }`. `data` lines up with `x`. One series is fine (a single line, or a plain histogram); more than one draws multiple lines, stacks (`stacked-bar`), or sits side by side (`bar`). Up to six series get distinct colours.
+
+Bars come in two shapes. `type: bar` draws **grouped** bars: within each category the series sit flush, side by side, so you compare values category by category (the y-axis is scaled to the largest single value). `type: stacked-bar` stacks them into one bar per category, so you read the total and each part's share. You can flip either with `grouped: true` or `stacked: true`. Both accept `orientation: horizontal` to run left-to-right with categories down the side (good for ranking or long labels), and an optional `yMax`/`xMax` to pin the axis.
+
+```yaml
+type: bar
+title: Page views by quarter
+unit: "k"
+x: [Q1, Q2, Q3, Q4]
+series:
+  - name: Blog
+    data: [12, 19, 24, 31]
+  - name: Docs
+    data: [8, 11, 9, 14]
+```
+
+For `donut`:
+
+```yaml
+type: donut
+title: Time by activity
+unit: " h"
+data:
+  - { name: Coding, value: 50 }
+  - { name: Reading, value: 30 }
+  - { name: Meetings, value: 20 }
+```
+
+The legend shows each slice's share as a percentage; the centre shows the total.
+
+Two habits keep charts honest. Give every chart a `title` that states what it shows, the same way a heading states a claim. And reach for a chart only when the shape of the data is the point: three numbers belong in a sentence, not a donut. A broken or malformed `:::chart` renders a visible "Chart error" note rather than failing the build, so a mistake is obvious in preview.
+
 ## Sentence-level craft
 
 This is where text stops sounding human. Most "AI slop" lives at the sentence level, and so does the cure.
