@@ -31,7 +31,7 @@ Here's the full set. Every number is a byte count, so smaller is better. "First 
 | ASCII Art                           | 64 (Python 3)   |     104 |      122 |
 | Don't Panic                         | 56 (Bash)       |      83 |      168 |
 | Power of Thor                       | 42 (Perl, Ruby) |      65 |      139 |
-| Températures                        | 29 (Perl)       |      57 |       85 |
+| Températures                        | 29 (Perl)       |      67 |       85 |
 | La descente                         | 27 (Ruby)       |      62 |       79 |
 | Unary                               | 64 (Bash)       |     103 |      155 |
 | Blunder - Episode 1                 | 215 (Python 3)  |     258 |      696 |
@@ -62,12 +62,12 @@ title: Best human TypeScript vs Opus 4.8, by puzzle (bytes, lower is better)
 orientation: horizontal
 caption: "The Fall - Episode 2 is left off: Opus wrote 3984 bytes there against the best TypeScript's 233, and it would flatten the rest of the chart."
 x:
-  - "Températures"
   - "La descente"
   - "Téléphone"
   - "Thor"
   - "Des nains"
   - "Super calc"
+  - "Températures"
   - "Génome"
   - "Don't Panic"
   - "Câblage"
@@ -86,12 +86,12 @@ series:
   - name: Best TypeScript
     data:
       [
-        57,
         62,
         63,
         65,
         65,
         66,
+        67,
         76,
         83,
         103,
@@ -110,12 +110,12 @@ series:
   - name: Opus 4.8
     data:
       [
-        85,
         79,
         100,
         139,
         249,
         169,
+        85,
         291,
         168,
         193,
@@ -135,7 +135,7 @@ series:
 
 :::
 
-The worst case isn't even on that chart. On The Fall - Episode 2, Opus produced 3984 bytes where the best TypeScript is 233 and first place is 209. It solved the puzzle. It just solved it like someone who has never heard the word "golf", writing a full, readable program when the game asked for a single dense line.
+The worst case isn't even on that chart. On The Fall - Episode 2, Opus produced 3984 bytes where the best TypeScript is 233 and first place is 209. The interesting part is how it got there. It started from a tight, minified attempt, then kept patching that same dense code to handle edge cases, one fix at a time, and never stepped back to rewrite once the solution passed. So the result is unreadable like golf, but four thousand bytes long: the worst of both. A human golfer would have thrown the draft away and started over.
 
 ## If you want to win, bring Perl
 
