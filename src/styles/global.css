@@ -30,8 +30,8 @@
      blues fill in. Light values tuned to read on the light bg. Used by the
      :::chart directive. */
   --chart-1: oklch(0.42 0.07 243);
-  --chart-2: oklch(0.56 0.085 232);
-  --chart-3: oklch(0.7 0.1 332);
+  --chart-2: oklch(0.66 0.12 332);
+  --chart-3: oklch(0.56 0.085 232);
   --chart-4: oklch(0.5 0.085 268);
   --chart-5: oklch(0.78 0.055 235);
   --chart-6: oklch(0.66 0.11 318);
@@ -95,8 +95,8 @@
   /* Chart series, lifted in lightness to read on the deep-slate dark bg.
      Same ordering as light: slate, steel, mauve, then paler blues/plum. */
   --chart-1: oklch(0.62 0.09 240);
-  --chart-2: oklch(0.7 0.09 230);
-  --chart-3: oklch(0.8 0.1 332);
+  --chart-2: oklch(0.78 0.11 332);
+  --chart-3: oklch(0.7 0.09 230);
   --chart-4: oklch(0.66 0.1 268);
   --chart-5: oklch(0.82 0.055 235);
   --chart-6: oklch(0.74 0.11 318);
@@ -423,6 +423,60 @@ samp {
 .prose h2:target,
 .prose h3:target {
   scroll-margin-top: 6rem;
+}
+
+/* =========================================================================
+   Tables — data tables in post bodies. A real full-width table (so cells fill
+   the row), UI font + tabular figures so numeric columns line up. Markdown
+   alignment (`---:`) emits align="right", which we keep. Long text in the first
+   column wraps rather than forcing a horizontal scrollbar.
+   ========================================================================= */
+.prose table {
+  width: 100%;
+  table-layout: auto;
+  /* `separate` + `overflow: hidden` lets the rounded corners clip the header
+     fill; border-spacing: 0 keeps it reading like a collapsed table. */
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  margin-block: 2.2em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.prose th,
+.prose td {
+  padding: 0.55em 0.9em;
+  border-bottom: 1px solid var(--border);
+  vertical-align: baseline;
+}
+.prose thead th {
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+.prose thead th:not([align]) {
+  text-align: left;
+}
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+.prose tbody tr:hover td {
+  background: var(--surface);
+}
+/* First column carries the label; keep it readable and let it wrap. */
+.prose tbody td:first-child {
+  font-weight: 560;
+  color: var(--ink);
+}
+.prose tbody td {
+  color: var(--muted);
 }
 
 /* =========================================================================
