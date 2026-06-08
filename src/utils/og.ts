@@ -172,9 +172,40 @@ const esc = (s: string) =>
 const truncate = (s: string, max: number) =>
   s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
 
-function brandRow(logo: string) {
+// Image sources are injected AFTER parsing. satori-html's `html()` parser is
+// ~O(n²) over the markup string, so embedding the large base64 data URIs (the
+// topo background alone is ~320KB) directly in the `src` attributes made parsing
+// a single card take 16-60s (satori itself stays ~40ms). We instead parse with
+// tiny placeholder tokens (milliseconds) and splice the real data URIs onto the
+// resulting <img> nodes, which satori reads directly.
+const TOPO_SRC = "@@topo@@";
+const LOGO_SRC = "@@logo@@";
+const COVER_SRC = "@@cover@@";
+
+type VNode = { type?: string; props?: { src?: string; children?: unknown } };
+
+// Walk the parsed satori-html tree and replace placeholder `src` tokens with the
+// real (large) data URIs. Mutates in place; returns the tree for convenience.
+function injectImages(node: unknown, srcs: Record<string, string>): unknown {
+  if (!node || typeof node !== "object") return node;
+  const props = (node as VNode).props;
+  if (props) {
+    if (typeof props.src === "string" && props.src in srcs) {
+      props.src = srcs[props.src];
+    }
+    const children = props.children;
+    if (Array.isArray(children)) {
+      for (const child of children) injectImages(child, srcs);
+    } else {
+      injectImages(children, srcs);
+    }
+  }
+  return node;
+}
+
+function brandRow() {
   return `<div style="display:flex;align-items:center;gap:20px">
-    <img src="${logo}" width="76" height="76" style="width:76px;height:76px;border-radius:16px" />
+    <img src="${LOGO_SRC}" width="76" height="76" style="width:76px;height:76px;border-radius:16px" />
     <span style="font-family:'Hanken Grotesk';font-weight:700;font-size:34px;letter-spacing:-0.01em;color:${LIGHT}">${esc(SITE.title)}</span>
   </div>`;
 }
@@ -191,11 +222,12 @@ function eyebrow(label: string) {
 function buildDefault(input: OgInput, logo: string, topo: string) {
   const title = esc(truncate(input.title, 80));
   const desc = esc(truncate(input.description, 180));
-  return html(`<div style="display:flex;flex-direction:column;width:${OG_WIDTH}px;height:${OG_HEIGHT}px;background-color:${SLATE};position:relative">
-    <img src="${topo}" width="${OG_WIDTH}" height="${OG_HEIGHT}" style="position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:${OG_HEIGHT}px" />
+  const markup =
+    html(`<div style="display:flex;flex-direction:column;width:${OG_WIDTH}px;height:${OG_HEIGHT}px;background-color:${SLATE};position:relative">
+    <img src="${TOPO_SRC}" width="${OG_WIDTH}" height="${OG_HEIGHT}" style="position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:${OG_HEIGHT}px" />
     <div style="display:flex;position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:10px;background-image:${ACCENT_BAR}"></div>
     <div style="display:flex;flex-direction:column;flex:1;padding:78px 84px;justify-content:space-between">
-      ${brandRow(logo)}
+      ${brandRow()}
       <div style="display:flex;flex-direction:column">
         ${eyebrow(input.eyebrow)}
         <div style="display:flex;font-family:'Hanken Grotesk';font-weight:700;font-size:66px;line-height:1.07;letter-spacing:-0.025em;color:${LIGHT};margin-top:22px">${title}</div>
@@ -204,6 +236,7 @@ function buildDefault(input: OgInput, logo: string, topo: string) {
       ${footerRow(input.host)}
     </div>
   </div>`);
+  return injectImages(markup, { [TOPO_SRC]: topo, [LOGO_SRC]: logo });
 }
 
 function buildWithCover(
@@ -217,10 +250,11 @@ function buildWithCover(
   // DOM order is paint order in satori (z-index is unsupported): the topo
   // background sits at the back, then the cover panel and seam, then the top
   // accent bar on top. The topo shows behind the text and is hidden by the photo.
-  return html(`<div style="display:flex;flex-direction:row;width:${OG_WIDTH}px;height:${OG_HEIGHT}px;background-color:${SLATE};position:relative">
-    <img src="${topo}" width="${OG_WIDTH}" height="${OG_HEIGHT}" style="position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:${OG_HEIGHT}px" />
+  const markup =
+    html(`<div style="display:flex;flex-direction:row;width:${OG_WIDTH}px;height:${OG_HEIGHT}px;background-color:${SLATE};position:relative">
+    <img src="${TOPO_SRC}" width="${OG_WIDTH}" height="${OG_HEIGHT}" style="position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:${OG_HEIGHT}px" />
     <div style="display:flex;flex-direction:column;width:760px;padding:70px 64px;justify-content:space-between">
-      ${brandRow(logo)}
+      ${brandRow()}
       <div style="display:flex;flex-direction:column">
         ${eyebrow(input.eyebrow)}
         <div style="display:flex;font-family:'Hanken Grotesk';font-weight:700;font-size:54px;line-height:1.08;letter-spacing:-0.025em;color:${LIGHT};margin-top:20px">${title}</div>
@@ -229,11 +263,16 @@ function buildWithCover(
       ${footerRow(input.host)}
     </div>
     <div style="display:flex;width:440px;height:${OG_HEIGHT}px;position:relative">
-      <img src="${cover}" width="440" height="${OG_HEIGHT}" style="width:440px;height:${OG_HEIGHT}px;object-fit:cover" />
+      <img src="${COVER_SRC}" width="440" height="${OG_HEIGHT}" style="width:440px;height:${OG_HEIGHT}px;object-fit:cover" />
       <div style="display:flex;position:absolute;top:0;left:0;width:6px;height:${OG_HEIGHT}px;background-image:linear-gradient(180deg, ${MAUVE}, #c77fb0)"></div>
     </div>
     <div style="display:flex;position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:10px;background-image:${ACCENT_BAR}"></div>
   </div>`);
+  return injectImages(markup, {
+    [TOPO_SRC]: topo,
+    [LOGO_SRC]: logo,
+    [COVER_SRC]: cover,
+  });
 }
 
 /** Render a social-share PNG for one page. */
