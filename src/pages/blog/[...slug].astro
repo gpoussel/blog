@@ -6,6 +6,7 @@ import Lightbox from "../../components/Lightbox.astro";
 import { getPublishedPosts, formatDate, readingTime } from "../../utils/posts";
 import type { Post } from "../../utils/posts";
 import { resolveCover } from "../../utils/cover";
+import { articleJsonLd } from "../../utils/jsonld";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -33,6 +34,18 @@ const {
 const { Content } = await render(post);
 const minutes = readingTime(post.body ?? "");
 const resolvedCover = await resolveCover(cover);
+
+const siteURL = Astro.site ?? Astro.url;
+const canonical = new URL(`/blog/${post.id}/`, siteURL);
+const jsonLd = articleJsonLd(siteURL, {
+  title,
+  description,
+  url: canonical,
+  image: new URL(`/og/blog/${post.id}.png`, siteURL),
+  datePublished: pubDate.toISOString(),
+  dateModified: updatedDate?.toISOString(),
+  section: category,
+});
 ---
 
 <BaseLayout
@@ -40,6 +53,9 @@ const resolvedCover = await resolveCover(cover);
   description={description}
   ogRoute={`blog/${post.id}`}
   article
+  publishedTime={pubDate.toISOString()}
+  modifiedTime={updatedDate?.toISOString()}
+  jsonLd={jsonLd}
 >
   <article class="post">
     <header class="container post-head prose-width">

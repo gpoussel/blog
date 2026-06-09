@@ -6,6 +6,7 @@ import "@fontsource-variable/victor-mono";
 import "../styles/global.css";
 
 import { SITE } from "../consts";
+import type { JsonLd } from "../utils/jsonld";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import TopoBackground from "../components/TopoBackground.astro";
@@ -17,6 +18,11 @@ interface Props {
    *  See src/pages/og/[...route].png.ts. Defaults to the home card. */
   ogRoute?: string;
   article?: boolean;
+  /** Article publish/update timestamps (ISO 8601) for `article:*` OG meta. */
+  publishedTime?: string;
+  modifiedTime?: string;
+  /** schema.org structured data injected as a JSON-LD <script>. */
+  jsonLd?: JsonLd | JsonLd[];
 }
 
 const {
@@ -24,7 +30,16 @@ const {
   description = SITE.description,
   ogRoute = "home",
   article = false,
+  publishedTime,
+  modifiedTime,
+  jsonLd,
 } = Astro.props;
+
+// JSON.stringify, then neutralise `<` so the payload can never break out of the
+// <script> element (e.g. a literal "</script>" inside a description).
+const jsonLdText = jsonLd
+  ? JSON.stringify(jsonLd).replace(/</g, "\\u003c")
+  : null;
 
 const pageTitle = title
   ? `${title} · ${SITE.title}`
@@ -56,6 +71,30 @@ const ogImage = new URL(`/og/${ogRoute}.png`, Astro.site ?? Astro.url);
     <meta property="og:image:alt" content={pageTitle} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
+
+    {
+      article && (
+        <>
+          <meta name="author" content={SITE.author} />
+          <meta property="article:author" content={SITE.author} />
+          {publishedTime && (
+            <meta property="article:published_time" content={publishedTime} />
+          )}
+          {(modifiedTime ?? publishedTime) && (
+            <meta
+              property="article:modified_time"
+              content={modifiedTime ?? publishedTime}
+            />
+          )}
+        </>
+      )
+    }
+
+    {
+      jsonLdText && (
+        <script type="application/ld+json" is:inline set:html={jsonLdText} />
+      )
+    }
 
     <link
       rel="alternate"
