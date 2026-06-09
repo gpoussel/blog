@@ -1,5 +1,5 @@
 ---
-title: "Why did my seven-page blog take 12 minutes to deploy?"
+title: "Why did my blog take 12 minutes to deploy?"
 description: "My static Astro blog took 12 minutes to build and deploy. The time went to satori-html parsing 320 KB data URIs quadratically in the OG image step, and to AVIF encodings thrown away with every GitHub Actions run. Both fixes are a few lines."
 pubDate: 2026-06-09
 category: "Web"
