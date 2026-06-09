@@ -50,12 +50,12 @@ A static personal blog built with **Astro 6** (output: `static`). English-langua
 
 ## Deployment & CI
 
-**Auto-deploy is GitHub Actions, defined in `.github/workflows/deploy.yml`.** On every push to `main` (and via manual `workflow_dispatch`) it builds with pnpm and uploads `dist/` to an SFTP server using native `lftp` + `sshpass` (no third-party deploy action). It is deliberately hardened for a public repo, preserve all of this if you touch the workflow:
+**Auto-deploy is GitHub Actions, defined in `.github/workflows/deploy.yml`.** On every push to `main` (and via manual `workflow_dispatch`) it builds with pnpm and uploads `dist/` to the server with `rsync` over SSH (auth via `sshpass`, no third-party deploy action). It is deliberately hardened for a public repo, preserve all of this if you touch the workflow:
 
 - No `pull_request` trigger and a `if: github.repository == 'gpoussel/blog'` fork guard, so PRs and forks can never deploy or read secrets.
 - Secrets live in the protected **`production` environment** (branch policy: `main` only), not at repo level: `SFTP_HOST`, `SFTP_PORT`, `SFTP_USERNAME`, `SFTP_PASSWORD`, `SFTP_TARGET_DIR`, `SFTP_KNOWN_HOSTS`. The README documents the one-time setup.
-- Least-privilege token (`permissions: contents: read`), third-party actions **pinned by commit SHA** (pin any new action you add), and strict SFTP host-key verification via `SFTP_KNOWN_HOSTS` (do not switch to `StrictHostKeyChecking=no`).
-- The upload uses `mirror --delete`, so the remote becomes an exact copy of `dist/` (remote-only files are removed). Drop `--delete` only if the target dir holds files that must survive.
+- Least-privilege token (`permissions: contents: read`), third-party actions **pinned by commit SHA** (pin any new action you add), and strict SSH host-key verification via `SFTP_KNOWN_HOSTS` (do not switch to `StrictHostKeyChecking=no`).
+- The upload uses `rsync --checksum --delete-after`: `--checksum` makes deploys incremental (it compares file _contents_, not size+mtime, so the always-fresh build timestamps don't trigger a full re-upload every run), and `--delete-after` makes the remote an exact copy of `dist/` (remote-only files are pruned, but only after a clean upload). Drop the delete only if the target dir holds files that must survive.
 
 **`main` is protected by GitHub rulesets** (configured server-side, not in the repo): commits must be **signed and verified**, changes must land via **pull request**, and force-pushes / deletions are blocked. Practical consequences when working here:
 
