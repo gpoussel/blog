@@ -10,12 +10,13 @@ import {
   type Category,
   type Post,
 } from "../../../utils/posts";
+import { categoryDescription, postCountLabel } from "../../../utils/page-meta";
 
 // One paginated list per category: /category/<slug>/, /category/<slug>/2, ...
 // Categories are derived from published posts, so an empty category never
 // generates a route. A post with N categories appears on N category pages.
-// No featured card here: every page holds exactly PAGE_SIZE posts. The cards
-// reuse the home OG image (per-category OG cards are a possible follow-up).
+// No featured card here: every page holds exactly PAGE_SIZE posts. All pages
+// of a category share its generated OG card (/og/category/<slug>.png).
 export const getStaticPaths = (async ({ paginate }) => {
   const categories = await getCategories();
   const paths = [];
@@ -39,7 +40,7 @@ interface Props {
 
 const { page, category } = Astro.props;
 const isFirstPage = page.currentPage === 1;
-const countLabel = `${category.count} post${category.count === 1 ? "" : "s"}`;
+const countLabel = postCountLabel(category.count);
 const title = isFirstPage
   ? category.name
   : `${category.name}, page ${page.currentPage}`;
@@ -47,7 +48,8 @@ const title = isFirstPage
 
 <BaseLayout
   title={title}
-  description={`Everything filed under ${category.name}: ${countLabel}.`}
+  description={categoryDescription(category)}
+  ogRoute={`category/${category.slug}`}
   prev={page.url.prev}
   next={page.url.next}
 >
@@ -76,7 +78,10 @@ const title = isFirstPage
     max-width: 56rem;
   }
   .back {
-    display: inline-block;
+    /* Block-level (unlike the post header, nothing block follows it here),
+       otherwise it shares a line with the inline-flex eyebrow below. */
+    display: block;
+    width: fit-content;
     font-family: var(--font-ui);
     font-size: var(--step--1);
     font-weight: 540;
