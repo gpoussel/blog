@@ -1,17 +1,42 @@
 ---
+import type { GetStaticPaths, Page } from "astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PostCard from "../components/PostCard.astro";
+import Pagination from "../components/Pagination.astro";
 import { SITE } from "../consts";
 import { HOME_LEDE } from "../utils/page-meta";
-import { getPublishedPosts } from "../utils/posts";
+import { getPublishedPosts, PAGE_SIZE } from "../utils/posts";
 import { websiteJsonLd } from "../utils/jsonld";
+import type { Post } from "../utils/posts";
 
-const posts = await getPublishedPosts();
-const [featured, ...rest] = posts;
-const jsonLd = websiteJsonLd(new URL("/", Astro.site ?? Astro.url));
+// The home list, paginated: / then /2, /3, ... The newest post is pulled out
+// as the featured card, shown on page 1 only; pagination applies to the rest,
+// so page 1 holds 1 + PAGE_SIZE posts and the other pages exactly PAGE_SIZE.
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+  const [featured, ...rest] = posts;
+  return paginate(rest, { pageSize: PAGE_SIZE, props: { featured } });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+  featured?: Post;
+}
+
+const { page, featured } = Astro.props;
+const isFirstPage = page.currentPage === 1;
+const jsonLd = isFirstPage
+  ? websiteJsonLd(new URL("/", Astro.site ?? Astro.url))
+  : undefined;
 ---
 
-<BaseLayout ogRoute="home" jsonLd={jsonLd}>
+<BaseLayout
+  title={isFirstPage ? undefined : `Writing, page ${page.currentPage}`}
+  ogRoute="home"
+  jsonLd={jsonLd}
+  prev={page.url.prev}
+  next={page.url.next}
+>
   <section class="container intro">
     <p class="eyebrow rise" style="--d:0s">Writing</p>
     <h1 class="intro-title rise" style="--d:0.06s">{SITE.tagline}</h1>
@@ -19,7 +44,7 @@ const jsonLd = websiteJsonLd(new URL("/", Astro.site ?? Astro.url));
   </section>
 
   {
-    featured && (
+    isFirstPage && featured && (
       <section class="container featured-wrap" aria-label="Featured">
         <p class="eyebrow featured-label">Featured</p>
         <PostCard post={featured} featured index={0} />
@@ -28,14 +53,16 @@ const jsonLd = websiteJsonLd(new URL("/", Astro.site ?? Astro.url));
   }
 
   {
-    rest.length > 0 && (
+    page.data.length > 0 && (
       <section class="container">
         <div class="section-head">
-          <h2 class="section-title">Recent writing</h2>
+          <h2 class="section-title">
+            {isFirstPage ? "Recent writing" : "Older writing"}
+          </h2>
           <span class="rule" aria-hidden="true" />
         </div>
         <div class="grid">
-          {rest.map((post, i) => (
+          {page.data.map((post, i) => (
             <PostCard post={post} index={i + 1} />
           ))}
         </div>
@@ -44,12 +71,16 @@ const jsonLd = websiteJsonLd(new URL("/", Astro.site ?? Astro.url));
   }
 
   {
-    posts.length === 0 && (
+    !featured && page.data.length === 0 && (
       <section class="container empty">
         <p>No posts yet. The first one is on its way.</p>
       </section>
     )
   }
+
+  <div class="container">
+    <Pagination page={page} />
+  </div>
 </BaseLayout>
 
 <style>

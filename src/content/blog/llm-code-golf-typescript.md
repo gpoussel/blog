@@ -2,7 +2,7 @@
 title: "Can an LLM win at code golf in TypeScript?"
 description: "I ran Opus 4.8 against 21 CodinGame code golf puzzles in TypeScript, from easy to hard. It never came close to first place, and usually didn't even beat the best human TypeScript. Here are the numbers."
 pubDate: 2026-06-01
-category: "AI"
+categories: ["AI", "Competitive Programming"]
 cover: "code-golf-typescript.jpg"
 coverAlt: "A single golf ball on a wooden tee, low in the grass, the rest of the course thrown out of focus behind it."
 coverCredit: "Photo by Will Porada on Unsplash"

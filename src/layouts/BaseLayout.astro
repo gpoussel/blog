@@ -23,6 +23,10 @@ interface Props {
   modifiedTime?: string;
   /** schema.org structured data injected as a JSON-LD <script>. */
   jsonLd?: JsonLd | JsonLd[];
+  /** Neighbouring pages of a paginated list, as site-relative paths,
+   *  rendered as <link rel="prev"/"next"> for SEO. */
+  prev?: string;
+  next?: string;
 }
 
 const {
@@ -33,6 +37,8 @@ const {
   publishedTime,
   modifiedTime,
   jsonLd,
+  prev,
+  next,
 } = Astro.props;
 
 // JSON.stringify, then neutralise `<` so the payload can never break out of the
@@ -59,6 +65,8 @@ const ogImage = new URL(`/og/${ogRoute}.png`, Astro.site ?? Astro.url);
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {prev && <link rel="prev" href={new URL(prev, Astro.site ?? Astro.url)} />}
+    {next && <link rel="next" href={new URL(next, Astro.site ?? Astro.url)} />}
     <meta name="color-scheme" content="light dark" />
 
     <meta property="og:type" content={article ? "article" : "website"} />

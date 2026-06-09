@@ -50,7 +50,8 @@ interface ArticleInput {
   image: URL;
   datePublished: string;
   dateModified?: string;
-  section?: string;
+  /** Category name(s); schema.org accepts a single Text or a list. */
+  section?: string | string[];
 }
 
 /** BlogPosting node for a single post. */
@@ -66,7 +67,7 @@ export function articleJsonLd(site: URL, a: ArticleInput): JsonLd {
     dateModified: a.dateModified ?? a.datePublished,
     inLanguage: SITE.lang,
     mainEntityOfPage: { "@type": "WebPage", "@id": a.url.href },
-    ...(a.section ? { articleSection: a.section } : {}),
+    ...(a.section && a.section.length ? { articleSection: a.section } : {}),
     author: person(site),
     publisher: person(site),
   };
