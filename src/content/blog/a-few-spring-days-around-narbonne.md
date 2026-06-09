@@ -2,7 +2,7 @@
 title: "A few spring days around Narbonne, in photos"
 description: "Photos from a late-March trip around Narbonne and the Côte Vermeille: Carcassonne, the canal at Narbonne, a rhino at Sigean, and the wind on the coast at Collioure, all off-season and under the sun."
 pubDate: 2026-04-15
-category: "Travel"
+categories: ["Travel"]
 cover: "cote-vermeille.jpg"
 coverAlt: "The Côte Vermeille between Cerbère and Banyuls, terraced vineyards running straight down to a wind-blown sea."
 ---

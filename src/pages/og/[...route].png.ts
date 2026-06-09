@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { SITE } from "../../consts";
-import { getPublishedPosts } from "../../utils/posts";
+import { getPublishedPosts, postCategories } from "../../utils/posts";
 import {
   ABOUT_TITLE,
   ABOUT_DESCRIPTION,
@@ -51,7 +51,9 @@ export async function getStaticPaths() {
     ...posts.map((post) => ({
       route: `blog/${post.id}`,
       input: {
-        eyebrow: post.data.category,
+        // The eyebrow is a single small label, so the card shows only the
+        // first category even when a post has several.
+        eyebrow: postCategories(post)[0],
         title: post.data.title,
         description: post.data.description,
         cover: post.data.cover,

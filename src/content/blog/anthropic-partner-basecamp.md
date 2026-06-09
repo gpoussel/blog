@@ -2,7 +2,7 @@
 title: "Notes on Anthropic's Partner Basecamp"
 description: "Two days at Anthropic's Partner Basecamp: the diagnostic loop, evals as a discipline, the three phases of AI inside a company, and an evening to rewalk London."
 pubDate: 2026-05-30
-category: "AI"
+categories: ["AI"]
 cover: "london-eye.jpg"
 coverAlt: "The London Eye gone quiet over the Thames at dusk, a minute before the lights came up."
 ---

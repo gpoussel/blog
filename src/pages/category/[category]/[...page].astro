@@ -1,0 +1,112 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PostCard from "../../../components/PostCard.astro";
+import Pagination from "../../../components/Pagination.astro";
+import {
+  getCategories,
+  getPostsByCategory,
+  PAGE_SIZE,
+  type Category,
+  type Post,
+} from "../../../utils/posts";
+
+// One paginated list per category: /category/<slug>/, /category/<slug>/2, ...
+// Categories are derived from published posts, so an empty category never
+// generates a route. A post with N categories appears on N category pages.
+// No featured card here: every page holds exactly PAGE_SIZE posts. The cards
+// reuse the home OG image (per-category OG cards are a possible follow-up).
+export const getStaticPaths = (async ({ paginate }) => {
+  const categories = await getCategories();
+  const paths = [];
+  for (const category of categories) {
+    const posts = await getPostsByCategory(category.name);
+    paths.push(
+      ...paginate(posts, {
+        pageSize: PAGE_SIZE,
+        params: { category: category.slug },
+        props: { category },
+      }),
+    );
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+  category: Category;
+}
+
+const { page, category } = Astro.props;
+const isFirstPage = page.currentPage === 1;
+const countLabel = `${category.count} post${category.count === 1 ? "" : "s"}`;
+const title = isFirstPage
+  ? category.name
+  : `${category.name}, page ${page.currentPage}`;
+---
+
+<BaseLayout
+  title={title}
+  description={`Everything filed under ${category.name}: ${countLabel}.`}
+  prev={page.url.prev}
+  next={page.url.next}
+>
+  <section class="container intro">
+    <a href="/" class="back rise" style="--d:0s">← All writing</a>
+    <p class="eyebrow rise" style="--d:0.04s">Category</p>
+    <h1 class="intro-title rise" style="--d:0.1s">{category.name}</h1>
+    <p class="intro-count rise" style="--d:0.16s">{countLabel}</p>
+  </section>
+
+  <section class="container">
+    <div class="grid">
+      {page.data.map((post, i) => <PostCard post={post} index={i} />)}
+    </div>
+  </section>
+
+  <div class="container">
+    <Pagination page={page} />
+  </div>
+</BaseLayout>
+
+<style>
+  .intro {
+    padding-top: clamp(2.5rem, 6vw, 4.5rem);
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+    max-width: 56rem;
+  }
+  .back {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    font-weight: 540;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition:
+      color 0.2s var(--ease-out),
+      transform 0.2s var(--ease-out);
+  }
+  .back:hover {
+    color: var(--accent-ink);
+    transform: translateX(-3px);
+  }
+  .intro-title {
+    font-size: var(--step-4);
+    letter-spacing: -0.03em;
+    margin-top: 0.5rem;
+  }
+  .intro-count {
+    margin-top: 1rem;
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    color: var(--muted);
+    font-weight: 480;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+    gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+  }
+</style>

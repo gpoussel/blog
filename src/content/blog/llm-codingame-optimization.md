@@ -2,7 +2,7 @@
 title: "How close can an LLM get to a CodinGame optimization leaderboard?"
 description: "I pointed Opus 4.8 at six CodinGame optimization puzzles. On the travelling salesman it tied the top of the leaderboard; on the open-ended games it reached a sixth or an eighth of the best score and stopped. The thing it's bad at is the CodinGame squeeze, not the solving."
 pubDate: 2026-06-07
-category: "AI"
+categories: ["AI", "Competitive Programming"]
 cover: "optimization-codingame.jpg"
 coverAlt: "A close-up of an open pocket watch lying on a table, its gears and hands sharp against a soft dark background."
 coverCredit: "Photo by Ruben Caldera on Unsplash"
