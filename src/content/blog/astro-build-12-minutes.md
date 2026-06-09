@@ -8,7 +8,7 @@ coverAlt: "A field of hot air balloons at dawn, a few already in the air, most s
 coverCredit: "Photo by ian dooley on Unsplash"
 ---
 
-This blog is a static Astro site. Seven pages, four of them posts. Pushing one commit took about 12 minutes to reach production: the build alone ate more than four minutes, and the CI runner spent another minute and a half encoding images it had already encoded the day before. Two separate problems, and in both cases the slow part wasn't the work itself. Here's where the time actually went.
+This blog is a static Astro site. Seven pages, four of them posts. Pushing one commit took about 12 minutes to reach production: the build alone ate more than four minutes, and the CI runner spent another minute and a half encoding images it had already encoded on the previous push. Two separate problems, and in both cases the slow part wasn't the work itself. Here's where the time actually went.
 
 ## Four minutes to build seven pages
 
@@ -42,7 +42,7 @@ Cards went from 17-67 seconds to 100-200 ms each. The full build went from 4 m 1
 
 I later found [an article about OG generation on Cloudflare Workers](https://dev.to/devoresyah/6-pitfalls-of-dynamic-og-image-generation-on-cloudflare-workers-satori-resvg-wasm-1kle) that hits the same wall ("Issue 3: satori-html Chokes on Large Data URLs") and lands on the same workaround, down to the placeholder token. One difference worth noting: for that author the parser produced broken output, while mine never broke anything. It got catastrophically slow instead. Same root cause, different symptom.
 
-## Ninety seconds of encoding, thrown away every night
+## Ninety seconds of encoding, thrown away on every push
 
 The second problem only existed in CI. Astro converts each photo into responsive variants at build time (AVIF for covers, WebP for galleries), and the deploy logs showed 90 seconds for 108 variants. On a blog with four posts. The cost is linear in the number of photos, so every future post would make deploys a little slower.
 
@@ -50,7 +50,7 @@ The per-variant numbers were no mystery: WebP comes out in 70 to 500 ms, AVIF in
 
 First, each cover was encoded seven times. The home-page card asked for `widths={[400, 800, 1200]}`, the post page for `widths={[640, 1024, 1280, 1920]}`. Two disjoint lists for the same source image, so Astro's deduplication of identical transforms (same source, same width, same format) never had a chance to apply.
 
-Second, Astro already caches the generated images and reuses them from one build to the next. Locally, a second build is near-instant. But a GitHub Actions runner is ephemeral: every deploy started from zero and re-encoded everything. The cache existed, it didn't survive the night.
+Second, Astro already caches the generated images and reuses them from one build to the next. Locally, a second build is near-instant. But a GitHub Actions runner is ephemeral: every push to `main` got a fresh machine, started from zero, and re-encoded everything. The cache existed, it died with the runner.
 
 ## Make the cache outlive the runner
 
@@ -71,7 +71,7 @@ Then persist that folder with [actions/cache](https://github.com/actions/cache),
     restore-keys: astro-assets-
 ```
 
-Two details in that key earn their place. `pnpm-lock.yaml` is there so a bump of Astro or sharp re-encodes everything, rather than serving variants produced by an old encoder. And the `restore-keys` prefix means adding a photo only encodes that photo: yesterday's cache is restored, Astro encodes what's missing. Deploys become O(new images) instead of O(all images), which is exactly the property you want for a site that's supposed to grow.
+Two details in that key earn their place. `pnpm-lock.yaml` is there so a bump of Astro or sharp re-encodes everything, rather than serving variants produced by an old encoder. And the `restore-keys` prefix means adding a photo only encodes that photo: the previous deploy's cache is restored, Astro encodes what's missing. Deploys become O(new images) instead of O(all images), which is exactly the property you want for a site that's supposed to grow.
 
 One gotcha picked up along the way: caches created on a PR branch aren't readable from `main` (the reverse works). The first deploy after the merge still runs cold; it's the one that seeds the cache for all the others.
 
@@ -96,4 +96,4 @@ Same widths, same transforms, so deduplication finally applies: four AVIF encodi
 
 The cache weighs 15.3 MB, against the 10 GB that actions/cache allows per repository.
 
-Neither fix made the slow work faster. Parsing a 2 KB string was always fast, and the AVIF encoder still takes its 26 seconds when it genuinely runs. One bug was a benchmark timing the wrong slice of code; the other was finished work thrown away with the runner. So: measure the step you're accusing, not the one next to it, and before optimizing a computation, check whether you're redoing it for nothing. I still wonder how many CI pipelines, right now, are re-encoding the same hundred images every single day.
+Neither fix made the slow work faster. Parsing a 2 KB string was always fast, and the AVIF encoder still takes its 26 seconds when it genuinely runs. One bug was a benchmark timing the wrong slice of code; the other was finished work thrown away with the runner. So: measure the step you're accusing, not the one next to it, and before optimizing a computation, check whether you're redoing it for nothing. I still wonder how many CI pipelines, right now, are re-encoding the same hundred images on every push.
