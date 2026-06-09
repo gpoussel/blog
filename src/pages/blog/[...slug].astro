@@ -5,7 +5,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import { getPublishedPosts, formatDate, readingTime } from "../../utils/posts";
 import type { Post } from "../../utils/posts";
-import { resolveCover } from "../../utils/cover";
+import { COVER_WIDTHS, resolveCover } from "../../utils/cover";
 import { articleJsonLd } from "../../utils/jsonld";
 
 export async function getStaticPaths() {
@@ -81,7 +81,7 @@ const jsonLd = articleJsonLd(siteURL, {
             src={resolvedCover.local}
             alt={coverAlt}
             format="avif"
-            widths={[640, 1024, 1280, 1920]}
+            widths={COVER_WIDTHS}
             sizes="(max-width: 70rem) 100vw, 70rem"
             loading="eager"
             fetchpriority="high"

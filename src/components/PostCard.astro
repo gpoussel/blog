@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import type { Post } from "../utils/posts";
 import { formatDate, readingTime } from "../utils/posts";
-import { resolveCover } from "../utils/cover";
+import { CARD_COVER_WIDTHS, resolveCover } from "../utils/cover";
 
 interface Props {
   post: Post;
@@ -30,7 +30,7 @@ const loading = featured ? "eager" : "lazy";
             src={resolvedCover.local}
             alt={coverAlt}
             format="avif"
-            widths={[400, 800, 1200]}
+            widths={CARD_COVER_WIDTHS}
             sizes="(max-width: 46rem) 100vw, 50vw"
             loading={loading}
             decoding="async"

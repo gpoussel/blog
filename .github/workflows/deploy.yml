@@ -44,6 +44,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache Astro image transforms
+        # Persists .astro-cache (see `cacheDir` in astro.config.mjs), where
+        # astro:assets stores the encoded AVIF/WebP variants, so a deploy only
+        # encodes images added/changed since the last run instead of all of
+        # them. The cache is content-addressed internally, so a stale
+        # restore-keys hit is safe: new images are encoded, the rest is reused.
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .astro-cache
+          # pnpm-lock.yaml is in the key so a sharp/astro bump re-encodes from
+          # scratch rather than serving variants produced by older encoders.
+          key: astro-assets-${{ hashFiles('pnpm-lock.yaml', 'src/assets/**') }}
+          restore-keys: astro-assets-
+
       - name: Build
         run: pnpm build
 
