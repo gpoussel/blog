@@ -27,15 +27,14 @@ cover: "https://images.unsplash.com/photo-..." # stock photo or /local/path
 coverAlt: "Image description for accessibility"
 coverCredit: "Photo credit (optional)"
 draft: false # true = hidden in production
-comments: false # true = GraphComment thread under the post
 ---
 
 Your **Markdown** content...
 ```
 
-Setting `comments: true` embeds [GraphComment](https://graphcomment.com/), a
-hosted third-party service: its script is loaded only on posts that opt in,
-and only once the reader scrolls near the thread.
+Every post embeds a [GraphComment](https://graphcomment.com/) thread under
+its footer, a hosted third-party service: its script is loaded only once the
+reader scrolls near the thread.
 
 ## Customize
 

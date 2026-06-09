@@ -16,9 +16,6 @@ export const postSchema = z.object({
   coverAlt: z.string().default(""),
   coverCredit: z.string().optional(),
   draft: z.boolean().default(false),
-  // Opt-in GraphComment thread under the post (loads a third-party script,
-  // only when the reader scrolls near it). See components/Comments.astro.
-  comments: z.boolean().default(false),
 });
 
 export type Post = z.infer<typeof postSchema>;

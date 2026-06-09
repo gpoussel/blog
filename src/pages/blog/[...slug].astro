@@ -122,7 +122,7 @@ const jsonLd = articleJsonLd(siteURL, {
 
     <footer class="container post-foot prose-width">
       <a href="/" class="back">← Back to writing</a>
-      {post.data.comments && <Comments uid={post.id} />}
+      <Comments uid={post.id} />
     </footer>
   </article>
 

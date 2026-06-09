@@ -217,13 +217,7 @@ When you hit a banned word, don't swap in a synonym. Rewrite the sentence to say
 
 ## Comments
 
-Comments are off by default. A post opts in with one frontmatter line:
-
-```yaml
-comments: true
-```
-
-That mounts a [GraphComment](https://graphcomment.com/) thread under the post footer. The thread is keyed to the post's slug (the filename), so a title change keeps its comments; the widget itself only loads when a reader scrolls near it, so opting in costs nothing up front. Turn it on for posts likely to start a conversation (results people will want to dispute, questions you genuinely want answered) and leave it off for the rest: an empty comment box under a quiet post is worse than none.
+Every post gets a [GraphComment](https://graphcomment.com/) thread under its footer automatically; there's nothing to declare in frontmatter. The thread is keyed to the post's slug (the filename), so a title change keeps its comments, and the widget only loads when a reader scrolls near it. The one thing worth remembering when writing: the post ends in an open invitation to react, so a closing line that asks a real question is never wasted here.
 
 ## A quick pass before you ship
 
