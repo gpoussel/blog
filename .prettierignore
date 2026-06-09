@@ -1,5 +1,6 @@
 dist
 node_modules
 .astro
+.astro-cache
 pnpm-lock.yaml
 .claude

@@ -36,6 +36,10 @@ const LASTMOD = blogLastmod();
 // Production domain (used for RSS, sitemap, canonical URLs, and OG images).
 export default defineConfig({
   site: "https://gpoussel.fr",
+  // Asset-transform cache (responsive AVIF/WebP variants). Kept outside
+  // node_modules (the default is node_modules/.astro) so CI can persist it
+  // across runs with actions/cache: deploys then only encode new images.
+  cacheDir: "./.astro-cache",
   integrations: [
     sitemap({
       serialize(item) {
