@@ -1,5 +1,5 @@
 ---
-title: "Why did my blog take 12 minutes to deploy?"
+title: "Why did my seven-page blog take 12 minutes to deploy?"
 description: "My static Astro blog took 12 minutes to build and deploy. The time went to satori-html parsing 320 KB data URIs quadratically in the OG image step, and to AVIF encodings thrown away with every GitHub Actions run. Both fixes are a few lines."
 pubDate: 2026-06-09
 category: "Web"
@@ -42,7 +42,7 @@ Cards went from 17-67 seconds to 100-200 ms each. The full build went from 4 m 1
 
 I later found [an article about OG generation on Cloudflare Workers](https://dev.to/devoresyah/6-pitfalls-of-dynamic-og-image-generation-on-cloudflare-workers-satori-resvg-wasm-1kle) that hits the same wall ("Issue 3: satori-html Chokes on Large Data URLs") and lands on the same workaround, down to the placeholder token. One difference worth noting: for that author the parser produced broken output, while mine never broke anything. It got catastrophically slow instead. Same root cause, different symptom.
 
-## Ninety seconds of encoding, thrown away on every push
+## Ninety seconds thrown away on every push
 
 The second problem only existed in CI. Astro converts each photo into responsive variants at build time (AVIF for covers, WebP for galleries), and the deploy logs showed 90 seconds for 108 variants. On a blog with four posts. The cost is linear in the number of photos, so every future post would make deploys a little slower.
 
