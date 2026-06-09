@@ -41,9 +41,9 @@ Your **Markdown** content...
 
 ## Deployment
 
-The site auto-deploys to an SFTP server on every push to `main`, via the
+The site auto-deploys to the server on every push to `main`, via the
 `.github/workflows/deploy.yml` GitHub Actions workflow (build with pnpm, then
-upload `dist/` with `lftp mirror`).
+upload `dist/` with `rsync --checksum` over SSH).
 
 The workflow is hardened for a public repository:
 
@@ -51,7 +51,7 @@ The workflow is hardened for a public repository:
 - `if: github.repository == 'gpoussel/blog'` makes the job a no-op on forks.
 - Secrets live in a protected `production` environment whose branch policy allows `main` only.
 - Read-only token (`contents: read`), no third-party deploy action, official actions pinned by SHA.
-- Strict SFTP host-key verification (`SFTP_KNOWN_HOSTS`) to defeat man-in-the-middle.
+- Strict SSH host-key verification (`SFTP_KNOWN_HOSTS`) to defeat man-in-the-middle.
 
 ### One-time setup
 
@@ -69,8 +69,11 @@ gh secret set SFTP_PASSWORD   --env production   # then type the password on std
 ssh-keyscan -p 22 your.server.tld | gh secret set SFTP_KNOWN_HOSTS --env production
 ```
 
-Note: the upload uses `mirror --delete`, so the target directory is kept as an
-exact copy of `dist/` (files removed from the build are removed on the server).
+Note: the upload uses `rsync --checksum --delete-after`. `--checksum` keeps deploys
+incremental (only files whose contents actually changed are sent, despite the build
+giving every file a fresh mtime), and `--delete-after` keeps the target directory an
+exact copy of `dist/` (files removed from the build are pruned on the server, after a
+clean upload). The server needs `rsync` available over SSH.
 
 ## Structure
 

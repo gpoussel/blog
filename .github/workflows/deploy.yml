@@ -4,8 +4,8 @@ name: Deploy
 #   * No `pull_request` trigger  -> PRs (incl. from forks) never run this and never see secrets.
 #   * `if: github.repository == ...` -> a fork has a different slug, so the deploy job no-ops there.
 #   * Secrets live in the protected `production` environment, whose branch policy allows `main` only.
-#   * Least-privilege token (`contents: read`), no third-party deploy action (native OpenSSH + lftp).
-#   * Strict host-key verification (SFTP_KNOWN_HOSTS) defeats man-in-the-middle on the SFTP endpoint.
+#   * Least-privilege token (`contents: read`), no third-party deploy action (native OpenSSH + rsync).
+#   * Strict host-key verification (SFTP_KNOWN_HOSTS) defeats man-in-the-middle on the SSH endpoint.
 
 on:
   push:
@@ -47,10 +47,11 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Install lftp and sshpass
-        run: sudo apt-get update && sudo apt-get install -y lftp sshpass
+      - name: Install sshpass
+        # rsync is preinstalled on ubuntu-latest; sshpass feeds the SFTP password to ssh.
+        run: sudo apt-get update && sudo apt-get install -y sshpass
 
-      - name: Deploy dist/ over SFTP
+      - name: Deploy dist/ over SSH (rsync)
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
           SFTP_PORT: ${{ secrets.SFTP_PORT }}
@@ -67,23 +68,27 @@ jobs:
           chmod 600 "$HOME/.sftp/known_hosts"
 
           PORT="${SFTP_PORT:-22}"
-          # lftp's sftp backend delegates auth to ssh; sshpass -e feeds the password from the
-          # SSHPASS env var (never on the command line, so it stays out of the process list).
+          # rsync runs over this ssh transport; sshpass -e feeds the password from the SSHPASS env
+          # var (never on the command line, so it stays out of the process list). Auth + host-key
+          # verification are identical to before: password only, no pubkey, strict known_hosts.
           export SSHPASS="$SFTP_PASSWORD"
           SSH="sshpass -e ssh -x -o PubkeyAuthentication=no -o PreferredAuthentications=password,keyboard-interactive -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.sftp/known_hosts -p $PORT"
 
-          # `mirror --reverse` uploads dist/ and `--delete` removes server files no longer present,
-          # keeping the remote a faithful copy of the build. `--no-perms` avoids chmod on the server.
-          lftp -c "
-            set cmd:fail-exit yes;
-            set net:max-retries 2;
-            set net:timeout 20;
-            set sftp:auto-confirm no;
-            set sftp:connect-program \"$SSH\";
-            open -u \"$SFTP_USERNAME,\" sftp://$SFTP_HOST;
-            mirror --reverse --delete --no-perms --verbose ./dist \"$SFTP_TARGET_DIR\";
-            bye
-          "
+          # Incremental upload: `--checksum` decides what to send by hashing file *contents*, not
+          # size+mtime. The build regenerates dist/ from scratch every run, so every file has a fresh
+          # mtime; without --checksum a timestamp-based tool re-uploads everything each deploy. With
+          # it, only genuinely changed files move (and rsync sends just their changed blocks).
+          #   -rlt        recurse, keep symlinks, preserve mtimes (no -p/-o/-g -> don't touch perms/owner)
+          #   --delete-after  make the remote an exact copy of dist/, but prune only after a clean upload
+          #   -z + skip   compress text transfers, skip already-compressed media (avif/images/woff2)
+          #   --rsync-path  absolute path in case the non-interactive PATH lacks rsync
+          rsync -rltz --checksum --delete-after \
+            --skip-compress=avif/jpg/jpeg/png/webp/woff2/woff/gz/br/zip \
+            --rsync-path=/usr/bin/rsync \
+            --timeout=30 \
+            --itemize-changes --human-readable --stats \
+            -e "$SSH" \
+            ./dist/ "$SFTP_USERNAME@$SFTP_HOST:$SFTP_TARGET_DIR/"
 
       - name: Clean up credentials
         if: always()
