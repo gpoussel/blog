@@ -1,0 +1,119 @@
+---
+import { GRAPHCOMMENT_ID } from "../consts";
+
+// GraphComment thread (hosted service, https://graphcomment.com/), mounted in
+// the post footer for posts with `comments: true` in their frontmatter.
+//
+// Two deliberate choices:
+// - The thread `uid` is the post slug, so a renamed title keeps its comments
+//   and two posts can never collide.
+// - The third-party loader is fetched only when the reader scrolls near the
+//   section (IntersectionObserver), so a post never pays for the widget up
+//   front. The `Date.now()` cache-buster from the official snippet runs in
+//   the browser, not at build, so builds stay deterministic.
+//
+// Light/dark: GraphComment's appearance is configured in its dashboard, not
+// per request; the surrounding chrome below uses the site tokens so the
+// section header at least follows the theme.
+
+interface Props {
+  /** Stable thread identifier: the post slug. */
+  uid: string;
+}
+
+const { uid } = Astro.props;
+---
+
+<section
+  class="comments"
+  aria-label="Comments"
+  data-graphcomment-id={GRAPHCOMMENT_ID}
+  data-graphcomment-uid={uid}
+>
+  <div class="section-head">
+    <h2 class="section-title">Comments</h2>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+  <div id="graphcomment"></div>
+</section>
+
+<script is:inline>
+  (function () {
+    var section = document.querySelector("[data-graphcomment-id]");
+    if (!section) return;
+
+    var loaded = false;
+    function load() {
+      if (loaded) return;
+      loaded = true;
+      var params = {
+        graphcommentId: section.getAttribute("data-graphcomment-id"),
+        behaviour: {
+          // Unique identifier for this page's thread: the post slug.
+          uid: section.getAttribute("data-graphcomment-uid"),
+        },
+      };
+      var gc = document.createElement("script");
+      gc.type = "text/javascript";
+      gc.async = true;
+      gc.defer = true;
+      gc.onload = function () {
+        window.__semio__gc_graphlogin(params);
+      };
+      gc.src =
+        "https://integration.graphcomment.com/gc_graphlogin.js?" + Date.now();
+      (document.head || document.body).appendChild(gc);
+    }
+
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(
+        function (entries) {
+          if (
+            entries.some(function (entry) {
+              return entry.isIntersecting;
+            })
+          ) {
+            observer.disconnect();
+            load();
+          }
+        },
+        // Start fetching a comfortable distance before the section is visible.
+        { rootMargin: "600px 0px" },
+      );
+      observer.observe(section);
+    } else {
+      load();
+    }
+  })();
+</script>
+
+<style>
+  .comments {
+    margin-top: 3rem;
+  }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.6rem;
+  }
+  .section-title {
+    font-size: var(--step-2);
+    letter-spacing: -0.025em;
+    white-space: nowrap;
+  }
+  .rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--accent-ink),
+      var(--border-strong) 18%,
+      transparent
+    );
+  }
+  /* Reserve a little room so the lazy embed doesn't jump the footer around. */
+  #graphcomment {
+    min-height: 8rem;
+  }
+</style>

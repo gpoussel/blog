@@ -215,6 +215,16 @@ Reach for the full list in `references/banlist.md` before finalizing any post. T
 
 When you hit a banned word, don't swap in a synonym. Rewrite the sentence to say what you actually mean in plain language. The word was usually a symptom of a sentence that wasn't saying anything.
 
+## Comments
+
+Comments are off by default. A post opts in with one frontmatter line:
+
+```yaml
+comments: true
+```
+
+That mounts a [GraphComment](https://graphcomment.com/) thread under the post footer. The thread is keyed to the post's slug (the filename), so a title change keeps its comments; the widget itself only loads when a reader scrolls near it, so opting in costs nothing up front. Turn it on for posts likely to start a conversation (results people will want to dispute, questions you genuinely want answered) and leave it off for the rest: an empty comment box under a quiet post is worse than none.
+
 ## A quick pass before you ship
 
 Read the draft once with these eyes. You don't need to score it, just notice:
