@@ -1,9 +1,14 @@
 import type { APIRoute } from "astro";
 import { SITE } from "../../consts";
-import { getPublishedPosts } from "../../utils/posts";
+import {
+  getCategories,
+  getPublishedPosts,
+  postCategories,
+} from "../../utils/posts";
 import {
   ABOUT_TITLE,
   ABOUT_DESCRIPTION,
+  categoryDescription,
   HOME_LEDE,
 } from "../../utils/page-meta";
 import { renderOgImage, type OgInput } from "../../utils/og";
@@ -26,6 +31,7 @@ const SITE_HOST = (() => {
 export async function getStaticPaths() {
   const host = SITE_HOST;
   const posts = await getPublishedPosts();
+  const categories = await getCategories();
 
   const pages: { route: string; input: OgInput }[] = [
     {
@@ -48,10 +54,21 @@ export async function getStaticPaths() {
         host,
       },
     },
+    ...categories.map((category) => ({
+      route: `category/${category.slug}`,
+      input: {
+        eyebrow: "Category",
+        title: category.name,
+        description: categoryDescription(category),
+        host,
+      } satisfies OgInput,
+    })),
     ...posts.map((post) => ({
       route: `blog/${post.id}`,
       input: {
-        eyebrow: post.data.category,
+        // The eyebrow is a single small label, so the card shows only the
+        // first category even when a post has several.
+        eyebrow: postCategories(post)[0],
         title: post.data.title,
         description: post.data.description,
         cover: post.data.cover,

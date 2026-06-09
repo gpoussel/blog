@@ -71,6 +71,22 @@ But this default yields to the user. If they ask for a specific length ("a quick
 
 The first draft is almost always too long. Write it, then ask of each paragraph: does the post die without this? If not, it goes. Redundant restatements, throat-clearing, and the second example that makes the same point as the first are the usual fat. Trust the reader to keep up.
 
+## Categories
+
+Every post declares one or more categories in frontmatter, and each one becomes a clickable pill linking to its `/category/<slug>/` page:
+
+```yaml
+categories: ["AI", "Competitive Programming"]
+```
+
+**Reuse before you invent.** There is no registry: the set of categories is derived from the posts themselves, so check what already exists before naming a new one (`grep -h categories: src/content/blog/*.md`). The current set: **AI**, **Competitive Programming**, **Travel**. A category with a single post makes a thin page, so a new name has to earn its place: add one only when you can already picture the second and third post that will live there. Otherwise file the post under the nearest existing category.
+
+**Naming.** A short noun phrase in Title Case, English, naming a broad subject area rather than a tag: "Travel", not "my trip to Narbonne". One or two categories fit most posts; three is the ceiling, and a post that seems to need more probably has a focus problem, not a metadata one.
+
+**Match the exact spelling of an existing category.** Identity is case-insensitive ("competitive programming" and "Competitive Programming" are one category), but the *displayed* name is the casing of the most recent post. So a casing slip in a new post silently re-labels the pill on every older post in that category. Copy the existing spelling, don't retype it.
+
+**Put the most representative category first.** The first one is what shows as the eyebrow on the post's social-share card; the rest appear only on the site itself.
+
 ## Images and galleries
 
 Photos go in a `:::gallery` block, which works anywhere in the body. It holds one to four images and picks the layout from the count: one image fills the column at its natural shape, two or three share a single row, four become a 2x2 grid. Clicking any photo opens it large in a lightbox.
@@ -211,7 +227,8 @@ Read the draft once with these eyes. You don't need to score it, just notice:
 6. Is the length right for the brief? If the user gave no target, aim for 400-700 and cut any paragraph that repeats another. If they asked for longer or shorter, match that instead.
 7. Does the ending say something new, or just repeat the intro?
 8. Does the frontmatter `description` work as a search snippet? It's what Google and social cards show, so make it a real, specific sentence (not a teaser), and let the title's main words appear naturally in the post's first paragraph and at least one heading.
-9. If the post uses a `:::gallery`, does each image's alt text read like a real sentence in the house voice? It's the caption and the screen-reader text, so a vague label is a missed chance.
-10. Last check: does this sound like one specific curious person, or like anyone could have generated it? If it's the second one, find the place to put a real opinion, a real number, or a real moment of doubt.
+9. Do the `categories` reuse existing names with their exact spelling, most representative first, and no more than the post actually needs?
+10. If the post uses a `:::gallery`, does each image's alt text read like a real sentence in the house voice? It's the caption and the screen-reader text, so a vague label is a missed chance.
+11. Last check: does this sound like one specific curious person, or like anyone could have generated it? If it's the second one, find the place to put a real opinion, a real number, or a real moment of doubt.
 
 Don't sand it down to perfection. A small redundancy kept for rhythm, a fragment, a casual aside in the middle of a technical point: those are the fingerprints of a person. Leave some in.

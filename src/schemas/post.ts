@@ -8,7 +8,9 @@ export const postSchema = z.object({
   description: z.string(),
   pubDate: z.coerce.date(),
   updatedDate: z.coerce.date().optional(),
-  category: z.string(),
+  // One or more free-form category names. Normalization (trim, case-insensitive
+  // identity via slug) happens on read in src/utils/posts.ts.
+  categories: z.array(z.string()).min(1),
   // Cover image: a stock-photo URL (Unsplash, etc.) or a local path.
   cover: z.string(),
   coverAlt: z.string().default(""),

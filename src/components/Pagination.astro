@@ -1,0 +1,75 @@
+---
+import type { Page } from "astro";
+
+// Prev / Next pager shared by the home and category lists. Lists are
+// newest-first, so "previous" is newer writing and "next" is older.
+// Renders nothing when everything fits on one page.
+
+interface Props {
+  page: Page<unknown>;
+}
+
+const { page } = Astro.props;
+const { currentPage, lastPage, url } = page;
+---
+
+{
+  lastPage > 1 && (
+    <nav class="pagination" aria-label="Pagination">
+      {url.prev ? (
+        <a class="page-link" href={url.prev} rel="prev">
+          <span aria-hidden="true">←</span> Newer
+        </a>
+      ) : (
+        <span class="page-link is-disabled" aria-hidden="true">
+          <span>←</span> Newer
+        </span>
+      )}
+      <span class="page-indicator">
+        Page {currentPage} of {lastPage}
+      </span>
+      {url.next ? (
+        <a class="page-link" href={url.next} rel="next">
+          Older <span aria-hidden="true">→</span>
+        </a>
+      ) : (
+        <span class="page-link is-disabled" aria-hidden="true">
+          Older <span>→</span>
+        </span>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    font-weight: 540;
+  }
+  .page-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+  a.page-link:hover {
+    color: var(--accent-ink);
+  }
+  .page-link.is-disabled {
+    opacity: 0.35;
+  }
+  .page-indicator {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
