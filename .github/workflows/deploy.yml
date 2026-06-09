@@ -50,7 +50,7 @@ jobs:
         # encodes images added/changed since the last run instead of all of
         # them. The cache is content-addressed internally, so a stale
         # restore-keys hit is safe: new images are encoded, the rest is reused.
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: .astro-cache
           # pnpm-lock.yaml is in the key so a sharp/astro bump re-encodes from
