@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
 import { SOCIALS } from "../consts";
 import { ABOUT_TITLE, ABOUT_DESCRIPTION } from "../utils/page-meta";
+import { profileJsonLd } from "../utils/jsonld";
 import portrait from "../assets/photos/myself.jpg";
 import aboutCerbere from "../assets/photos/about-cerbere.jpg";
 import aboutFlower from "../assets/photos/about-flower.jpg";
@@ -26,9 +27,16 @@ const gallery = [
     alt: "A shaded courtyard terrace, cypress and olive around a still water channel.",
   },
 ];
+
+const jsonLd = profileJsonLd(new URL("/", Astro.site ?? Astro.url));
 ---
 
-<BaseLayout title={ABOUT_TITLE} description={ABOUT_DESCRIPTION} ogRoute="about">
+<BaseLayout
+  title={ABOUT_TITLE}
+  description={ABOUT_DESCRIPTION}
+  ogRoute="about"
+  jsonLd={jsonLd}
+>
   <section class="container about prose-width">
     <div class="intro">
       <figure class="portrait rise" style="--d:0s">
