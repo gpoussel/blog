@@ -2,7 +2,7 @@
 title: "Why did my seven-page blog take 12 minutes to deploy?"
 description: "My static Astro blog took 12 minutes to build and deploy. The culprits: satori-html parsing 320 KB data URIs quadratically, AVIF encodings thrown away with every CI runner, and an upload that re-sent unchanged files. Three fixes, a few lines each."
 pubDate: 2026-06-09
-category: "Web"
+categories: ["Web"]
 cover: "astro-build-perf.jpg"
 coverAlt: "A field of hot air balloons at dawn, a few already in the air, most still inflating on the ground."
 coverCredit: "Photo by ian dooley on Unsplash"
