@@ -8,11 +8,14 @@ export type Post = CollectionEntry<"blog">;
  *  home page 1 holds 1 + PAGE_SIZE posts and every other page exactly PAGE_SIZE. */
 export const PAGE_SIZE = 8;
 
+// Module scope, not per call: one consistent "today" for the whole build, so a
+// build straddling UTC midnight cannot list a post whose route was not generated.
+const today = utcDateStamp(new Date());
+
 /** All published posts, newest first. Drafts and future-dated posts are
  *  excluded in production (scheduling, issue #16); `pnpm dev` shows everything
  *  so scheduled posts stay previewable. */
 export async function getPublishedPosts(): Promise<Post[]> {
-  const today = utcDateStamp(new Date());
   const posts = await getCollection("blog", ({ data }) => {
     return import.meta.env.PROD
       ? data.draft !== true && isPubDateReached(data.pubDate, today)

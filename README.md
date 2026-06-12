@@ -54,7 +54,10 @@ live on its `pubDate` (production builds exclude future-dated posts). A cheap
 `gate` job compares the set of published posts against the last successful run
 (`scripts/scheduled-deploy-gate.ts`, frontmatter read straight from git) and
 skips the build+deploy when nothing changed, so the no-op days cost seconds.
-Push and manual runs always deploy; nothing deploys off `main`.
+Push and manual runs always deploy; nothing deploys off `main`. Note that
+GitHub disables `schedule` triggers after about 60 days without repo activity
+(it emails a warning first), so a far-future post in a quiet repo may need the
+schedule re-enabled from the Actions tab.
 
 The workflow is hardened for a public repository:
 
