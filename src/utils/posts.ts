@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isPubDateReached, utcDateStamp } from "./publication";
 
 export type Post = CollectionEntry<"blog">;
 
@@ -7,10 +8,15 @@ export type Post = CollectionEntry<"blog">;
  *  home page 1 holds 1 + PAGE_SIZE posts and every other page exactly PAGE_SIZE. */
 export const PAGE_SIZE = 8;
 
-/** All published posts, newest first. Drafts are excluded in production. */
+/** All published posts, newest first. Drafts and future-dated posts are
+ *  excluded in production (scheduling, issue #16); `pnpm dev` shows everything
+ *  so scheduled posts stay previewable. */
 export async function getPublishedPosts(): Promise<Post[]> {
+  const today = utcDateStamp(new Date());
   const posts = await getCollection("blog", ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true;
+    return import.meta.env.PROD
+      ? data.draft !== true && isPubDateReached(data.pubDate, today)
+      : true;
   });
   return posts.sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),

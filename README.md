@@ -49,6 +49,13 @@ The site auto-deploys to the server on every push to `main`, via the
 `.github/workflows/deploy.yml` GitHub Actions workflow (build with pnpm, then
 upload `dist/` with `rsync --checksum` over SSH).
 
+The workflow also runs daily at 06:30 UTC so a post merged ahead of time goes
+live on its `pubDate` (production builds exclude future-dated posts). A cheap
+`gate` job compares the set of published posts against the last successful run
+(`scripts/scheduled-deploy-gate.ts`, frontmatter read straight from git) and
+skips the build+deploy when nothing changed, so the no-op days cost seconds.
+Push and manual runs always deploy; nothing deploys off `main`.
+
 The workflow is hardened for a public repository:
 
 - No `pull_request` trigger, so PRs (including from forks) never deploy or read secrets.
