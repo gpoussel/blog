@@ -9,6 +9,10 @@ export const SITE = {
   lang: "en",
 } as const;
 
+// GraphComment site id (public by nature: it ships in the HTML of every
+// post that opts into comments). Threads are keyed by post slug.
+export const GRAPHCOMMENT_ID = "gpoussel-blog";
+
 export const NAV = [
   { label: "Writing", href: "/" },
   { label: "About", href: "/about" },

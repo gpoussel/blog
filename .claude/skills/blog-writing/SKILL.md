@@ -215,6 +215,10 @@ Reach for the full list in `references/banlist.md` before finalizing any post. T
 
 When you hit a banned word, don't swap in a synonym. Rewrite the sentence to say what you actually mean in plain language. The word was usually a symptom of a sentence that wasn't saying anything.
 
+## Comments
+
+Every post gets a [GraphComment](https://graphcomment.com/) thread under its footer automatically; there's nothing to declare in frontmatter. The thread is keyed to the post's slug (the filename), so a title change keeps its comments, and the widget only loads when a reader scrolls near it. The one thing worth remembering when writing: the post ends in an open invitation to react, so a closing line that asks a real question is never wasted here.
+
 ## A quick pass before you ship
 
 Read the draft once with these eyes. You don't need to score it, just notice:

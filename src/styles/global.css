@@ -5,6 +5,12 @@
 
 /* ----- Tokens: light theme (default) ----- */
 :root {
+  /* Tell the browser which scheme is active (native form controls,
+     scrollbars). Also required for embedded iframes (GraphComment) to keep a
+     transparent background: when the embedder's color-scheme doesn't match
+     the iframe document's, the browser paints an opaque backdrop behind it. */
+  color-scheme: light;
+
   /* Palette : #213C51 slate · #6594B1 acier · #DDAED3 mauve · #EEEEEE gris */
   --bg: oklch(0.99 0.004 240);
   --surface: oklch(0.949 0.006 240);
@@ -75,6 +81,8 @@
 
 /* ----- Tokens: dark theme ----- */
 :root[data-theme="dark"] {
+  color-scheme: dark;
+
   --bg: oklch(0.205 0.028 244);
   --surface: oklch(0.265 0.04 244);
   --surface-2: oklch(0.315 0.046 244);

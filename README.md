@@ -22,7 +22,7 @@ Create a `.md` file in `src/content/blog/`. The filename becomes the URL
 title: "Post title"
 description: "Summary shown in listings and for SEO."
 pubDate: 2026-05-31
-category: "artificial intelligence"
+categories: ["AI"] # one or more; each gets a /category/<slug>/ page
 cover: "https://images.unsplash.com/photo-..." # stock photo or /local/path
 coverAlt: "Image description for accessibility"
 coverCredit: "Photo credit (optional)"
@@ -31,6 +31,10 @@ draft: false # true = hidden in production
 
 Your **Markdown** content...
 ```
+
+Every post embeds a [GraphComment](https://graphcomment.com/) thread under
+its footer, a hosted third-party service: its script is loaded only once the
+reader scrolls near the thread.
 
 ## Customize
 
