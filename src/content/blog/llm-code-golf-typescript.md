@@ -2,6 +2,7 @@
 title: "Can an LLM win at code golf in TypeScript?"
 description: "I ran Opus 4.8 against 21 CodinGame code golf puzzles in TypeScript, from easy to hard. It never came close to first place, and usually didn't even beat the best human TypeScript. Here are the numbers."
 pubDate: 2026-06-01
+updatedDate: 2026-06-13
 categories: ["AI", "Competitive Programming"]
 cover: "code-golf-typescript.jpg"
 coverAlt: "A single golf ball on a wooden tee, low in the grass, the rest of the course thrown out of focus behind it."
@@ -9,6 +10,8 @@ coverCredit: "Photo by Will Porada on Unsplash"
 ---
 
 [Code golf](https://en.wikipedia.org/wiki/Code_golf) is the game of solving a problem in the fewest bytes of source code you can manage. The score is the size of the program, and lower is better. It rewards every habit a good engineer is taught to drop: one-letter names, abused operators, no readability at all. I wanted to see how a current LLM handles that inversion, so I pointed Opus 4.8 (medium effort) at 21 code golf puzzles on [CodinGame](https://www.codingame.com/), easy to hard, and made it write TypeScript. The short version: it never got close to first place, and most of the time it didn't even beat the shortest known human TypeScript solution.
+
+_Follow-up: I later re-ran the same 21 puzzles with [Claude Fable 5](/blog/llm-code-golf-fable/), the newer top model. It wrote a quarter fewer bytes than Opus, though it still sits above the best human TypeScript._
 
 ## Why TypeScript, of all languages
 
