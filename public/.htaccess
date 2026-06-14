@@ -1,0 +1,14 @@
+# Canonical host redirects (Apache / OVH mutualisé).
+# Consolidate every URL variant to https://gpoussel.fr so Google sees a single
+# canonical host. Without this, http://, www. and http://www. variants surface in
+# Search Console as "Alternate page with proper canonical tag" duplicates.
+# Files in public/ are copied verbatim to dist/ and deployed to the web root.
+
+RewriteEngine On
+
+# www -> non-www and http -> https, all to https://gpoussel.fr (single 301).
+# If OVH terminates SSL upstream and this causes a redirect loop, swap the
+# second condition for: RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTP_HOST} ^www\. [NC,OR]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://gpoussel.fr%{REQUEST_URI} [R=301,L]
