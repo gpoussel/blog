@@ -182,7 +182,11 @@ This is where text stops sounding human. Most "AI slop" lives at the sentence le
 
 **Cut the undermining words.** "Just", "simply", "clearly", "basically", "of course", "obviously". They assume the reader already knows what you're about to teach, and they usually do nothing. "Just run `npm install`" → "Run `npm install`".
 
-**Take a position.** "This API is badly designed because..." beats "Some might argue the API has tradeoffs." False balance is a tell. The real world is rarely 50/50, so don't pretend it is. If you have an opinion, say it.
+**Take a position.** "This API is badly designed because..." beats "Some might argue the API has tradeoffs." False balance is a tell. The real world is rarely 50/50, so don't pretend it is. If you have an opinion, say it. And skip the lazy extremes ("every", "always", "never", "nobody") that fake authority: a specific claim you'll defend beats a sweeping one you can't.
+
+**Name the actor; keep verbs active.** Passive voice hides who did the thing and drains the sentence ("the config was changed" → who changed it?). Worse is false agency: handing inanimate things human verbs because it ducks naming anyone. Complaints don't "become" fixes, decisions don't "emerge", the data doesn't "tell us", the culture doesn't "shift". A person did something, so say who: "I read the logs and rolled it back" beats "the data told us to roll back". When no specific person fits, use "you" and put the reader in the seat.
+
+**Stay in the room, not above it.** Write from inside the scene, not as a narrator floating over it. "You hit this the first time you deploy" beats "Nobody designed this", "This is why...", or "People tend to...". The whole voice is one person talking to a peer, so the disembodied-lecturer register is off-brand here.
 
 **Be specific.** "Three Astro plugins" not "various tools". "Since 2023" not "in recent years". "I lost an afternoon to this" not "this can be time-consuming". Specificity is the cheapest way to sound like you were actually there.
 
@@ -209,9 +213,11 @@ Reach for the full list in `references/banlist.md` before finalizing any post. T
 - Poetic nouns used figuratively: tapestry, landscape, realm, journey, ecosystem, cornerstone, beacon, testament.
 - Opener crutches: "In today's world", "In the ever-evolving landscape of", "In an era where".
 - Closer crutches: "In conclusion", "In summary", "Overall", "At the end of the day".
-- Formula sentences: "It's not just X, it's Y", "Not only X but also Y", "From X to Y", "No A. No B. Just C."
-- Fake-casual tells: "Here's the thing:", "But honestly?", "Let me be clear:", "Let's dive in".
+- Formula sentences: "It's not just X, it's Y", "Not only X but also Y", "From X to Y", "No A. No B. Just C.", and the negative-listing buildup ("Not a tool. Not a framework. A...").
+- Fake-casual tells: "Here's the thing:", "But honestly?", "Let me be clear:", "Let's dive in". Emphasis crutches: "Let that sink in.", "Full stop.", "Make no mistake".
 - Vague attribution: "Experts say", "Studies show", "It's widely regarded as". Name the source or cut it.
+- Vague declaratives: "The implications are significant", "The stakes are high". Name the specific thing or cut the sentence.
+- Voice tells (full treatment in the banlist): false agency, passive voice, narrator-from-a-distance, Wh- sentence starters, lazy extremes.
 
 When you hit a banned word, don't swap in a synonym. Rewrite the sentence to say what you actually mean in plain language. The word was usually a symptom of a sentence that wasn't saying anything.
 
@@ -235,4 +241,20 @@ Read the draft once with these eyes. You don't need to score it, just notice:
 10. If the post uses a `:::gallery`, does each image's alt text read like a real sentence in the house voice? It's the caption and the screen-reader text, so a vague label is a missed chance.
 11. Last check: does this sound like one specific curious person, or like anyone could have generated it? If it's the second one, find the place to put a real opinion, a real number, or a real moment of doubt.
 
+**An optional sharper read.** When a draft feels off but you can't name why, score it 1-10 on each axis and look at the low number. It points at the fix faster than re-reading does.
+
+| Dimension | The question |
+|-----------|--------------|
+| Directness | Statements, or announcements of statements? |
+| Rhythm | Varied sentence lengths, or metronomic? |
+| Trust | Does it respect the reader, or hand-hold and hedge? |
+| Authenticity | One specific person, or anyone? |
+| Density | Anything cuttable without loss? |
+
+Under 35/50, revise before shipping. This is a diagnostic, not a gate: a piece that reads right doesn't need a number.
+
 Don't sand it down to perfection. A small redundancy kept for rhythm, a fragment, a casual aside in the middle of a technical point: those are the fingerprints of a person. Leave some in.
+
+## Credits
+
+The AI-slop catalogue here (the banlist's voice tells and structural patterns) is partly adapted from [stop-slop](https://github.com/hardikpandya/stop-slop) by Hardik Pandya, used under the MIT License, and merged with this blog's own house rules. The scoring rubric above comes from the same project.

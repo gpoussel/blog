@@ -11,9 +11,11 @@ sentence is filling space instead of saying something.
 1. Banned vocabulary
 2. Banned phrases (openers, closers, filler)
 3. Banned sentence structures
-4. Idioms to skip (the non-native author wouldn't reach for these)
-5. Punctuation and rhythm
-6. Replacement strategy
+4. Voice tells (agency, distance, vagueness, extremes)
+5. Idioms to skip (the non-native author wouldn't reach for these)
+6. Punctuation and rhythm
+7. Replacement strategy
+8. Credits
 
 ---
 
@@ -58,7 +60,17 @@ Start with a concrete fact, a scene, or the actual problem instead.
 **Fake authenticity:** "Here's the thing:", "But honestly?", "Here's the truth:", "Let me
 be clear:", "But here's where it gets interesting...", "Let me break this down...", "Think
 about it this way...". These imitate a candid voice; a real candid voice doesn't announce
-itself.
+itself. Any "here's what / here's why / here's this" is throat-clearing before the point:
+cut it and state the point.
+
+**Emphasis crutches (delete, they add no meaning):** "Let that sink in.", "Full stop.",
+"Period.", "Make no mistake", "This matters because", "Here's why that matters". The
+emphasis should come from the fact, not from a label announcing that it's emphatic.
+
+**Meta-commentary (cut; let the post move instead of narrating itself):** "The rest of this
+essay explains...", "Let me walk you through...", "In this section, we'll...", "As we'll
+see...", "I want to explore...", "Plot twist:", "Spoiler:", "Hint:". A post that announces
+its own structure reads as a machine filling a template.
 
 **Filler to cut or rewrite:** "plays a crucial role" → say the action, "when it comes to" →
 use a verb, "in order to" → "to", "a wide range of" → name them, "needless to say" → cut,
@@ -75,8 +87,22 @@ specific source, or remove the claim.
 
 ## 3. Banned sentence structures
 
-**Negative parallelism:** "It's not just X, it's Y" / "It's not about X, it's about Y" /
-"Not only X, but also Y". State what the thing *is*, directly.
+**Negative parallelism / binary contrast:** the telegraphed reversal where you set up a
+false opposite only to knock it down. "It's not just X, it's Y" / "It's not about X, it's
+about Y" / "Not only X, but also Y" / "The answer isn't X, it's Y" / "The question isn't X,
+it's Y" / "It feels like X, it's actually Y" / "X isn't the problem, Y is" / "stops being X
+and starts being Y" / "doesn't mean X but actually Y". State what the thing *is*, directly,
+and drop the negation entirely. "The problem is Y."
+
+**Negative listing (the rhetorical striptease):** stacking what something *isn't* to build
+suspense before the reveal. "Not a tool. Not a framework. A way of thinking." / "It wasn't
+the code. It wasn't the tests. It was the deploy." State the last item. The reader doesn't
+need the runway.
+
+**Wh- sentence starters:** opening a sentence with What, When, Where, Which, Who, Why, or
+How as a rhetorical lead-in. "What makes this hard is the cache invalidation" becomes "The
+cache invalidation is what makes this hard", or better, "Cache invalidation breaks it." Lead
+with the subject or the verb, not the question word.
 
 **False range:** "From X to Y" as a vague figurative spectrum ("from tiny scripts to
 sprawling systems"). Only use "from X to Y" for a real, measurable range.
@@ -95,7 +121,49 @@ reflex. Count your lists. If they're all threes, vary them.
 **Compulsive restatement:** the last sentence of a paragraph repeating the first in
 different words. Delete it; trust the reader.
 
-## 4. Idioms to skip
+## 4. Voice tells
+
+These are the patterns that, more than any single word, make prose read as written by
+nobody. Each one has the same cure: name the human, name the specific, get into the scene.
+
+**False agency (the big one).** AI loves giving inanimate things human verbs because it
+avoids naming who actually acted. Complaints don't "become" fixes, decisions don't "emerge",
+cultures don't "shift", data doesn't "tell us", markets don't "reward". A person did
+something.
+
+| Autopilot | What actually happened |
+|-----------|------------------------|
+| "the complaint becomes a fix" | someone read it and fixed the bug that week |
+| "the decision emerges" | someone decided |
+| "the data tells us" | I read the logs and concluded |
+| "the culture shifts" | people changed how they reviewed PRs |
+| "the conversation moves toward" | someone steered the thread |
+
+Name the person. If no specific person fits, use "you" to put the reader in the seat: "you
+don't sit down one day and decide to..." beats "nobody designed this."
+
+**Passive voice.** It hides the actor and drains the sentence. "The config was changed"
+→ who changed it? "It is believed that" → who believes it? Find the actor, put them at the
+front. (Passive is fine when the actor genuinely doesn't matter, "the box was shipped
+Tuesday", but that's the exception, not the default.)
+
+**Narrator-from-a-distance.** Floating above the scene as a lecturer instead of standing in
+it. "Nobody designed this", "This happens because...", "People tend to...", "This is why...".
+Put the reader in the room: "You hit this the first time you..." The blog's whole voice is
+one person talking to a peer, so the disembodied-observer register is doubly off-brand here.
+
+**Vague declaratives.** Announcing that something is important, deep, or structural without
+naming the specific thing. "The reasons are structural", "The implications are significant",
+"The stakes are high", "This is the deepest problem". If a sentence claims importance without
+showing the specific thing, replace it with the specific thing or cut it.
+
+**Lazy extremes.** "Every", "always", "never", "everyone", "nobody" doing vague work to sound
+authoritative. They're almost always false and the reader knows it. Use the specific count or
+case: "every time I ran it" → "three of the four runs"; "nobody does this" → "I haven't seen
+it in the Astro docs". (This connects to taking a real position in SKILL.md: a specific claim
+you'll defend beats a sweeping one you can't.)
+
+## 5. Idioms to skip
 
 These are the idioms a non-native author would only use to "sound native". They read as
 borrowed, and they're clichés anyway: "at the end of the day", "game-changer", "hit the
@@ -103,7 +171,7 @@ ground running", "low-hanging fruit", "move the needle", "circle back", "deep di
 the ocean", "the elephant in the room", "drink the Kool-Aid", "secret sauce", "bread and
 butter", "no-brainer". Plain description always beats a tired idiom.
 
-## 5. Punctuation and rhythm
+## 6. Punctuation and rhythm
 
 - **Em dashes:** roughly one per 500 words, max. This blog avoids them by convention; prefer
   commas, colons, parentheses, or a new sentence. (See CLAUDE.md.)
@@ -115,7 +183,7 @@ butter", "no-brainer". Plain description always beats a tired idiom.
 - **Allow small imperfection:** an occasional fragment, a trailing thought, a casual aside.
   Too-clean punctuation reads as machine-made.
 
-## 6. Replacement strategy
+## 7. Replacement strategy
 
 When you hit a banned word, **don't reach for a synonym.** A synonym keeps the same empty
 sentence with a different mask. Instead, ask what the sentence is actually trying to say,
@@ -130,3 +198,11 @@ and write that in the shortest plain words you've got:
 
 And if the honest answer is that the sentence wasn't saying anything, delete it. That's the
 most common fix of all.
+
+## 8. Credits
+
+The false-agency, passive-voice, narrator-from-a-distance, vague-declarative, lazy-extreme,
+binary-contrast, negative-listing, and Wh-starter patterns in sections 3 and 4 are adapted
+from [stop-slop](https://github.com/hardikpandya/stop-slop) by Hardik Pandya, used under the
+MIT License. The wording here has been rewritten to fit this blog's voice and merged with the
+patterns we already tracked.
