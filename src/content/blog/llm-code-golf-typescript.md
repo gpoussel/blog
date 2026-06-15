@@ -15,7 +15,7 @@ _Follow-up: I later re-ran the same 21 puzzles with [Claude Fable 5](/blog/llm-c
 
 ## Why TypeScript, of all languages
 
-TypeScript is a deliberately strange pick for golf. Nobody golfs it in real life, because the code you ship gets transpiled to JavaScript and minified by a tool, never shrunk by hand. The language is built for the opposite of golf. Variables must be declared, a function's arity is fixed, the types want to be spelled out. It resists you at every byte.
+TypeScript is a deliberately strange pick for golf. You don't golf it in real life: the code you ship gets transpiled to JavaScript and minified by a tool, never shrunk by hand. The language is built for the opposite of golf. Variables must be declared, a function's arity is fixed, the types want to be spelled out. It resists you at every byte.
 
 That resistance is the whole point of the experiment. I wanted a language where the model can't lean on a culture of golfing tricks it absorbed during training, the way it obviously can with Perl or Ruby. TypeScript is a clean room.
 
@@ -164,7 +164,7 @@ Perl and Ruby take the top spot on 16 of the 21 puzzles between them. Both are t
 
 ## Could it reach first place honestly?
 
-One caveat about the leaderboard itself. Some of these puzzles have a history of rule-bending entries: code shaped around the exact test cases CodinGame ran rather than the actual problem, which lands far below any honest solution. Those holes have reportedly been closed since. So in principle a model now has a fair target and could climb toward first place "à la loyale".
+One caveat about the leaderboard itself. Some of these puzzles have a history of rule-bending entries: code shaped around the exact test cases CodinGame ran rather than the actual problem, which lands far below any honest solution. CodinGame has reportedly closed those holes since. So in principle a model now has a fair target and could climb toward first place "à la loyale".
 
 It doesn't. Even leaving the suspect old records aside, there are two gaps to close, not one: Opus sits well above the best honest TypeScript, and TypeScript itself sits well above the all-language record. The model isn't closing either.
 
