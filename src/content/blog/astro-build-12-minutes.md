@@ -8,7 +8,7 @@ coverAlt: "A field of hot air balloons at dawn, a few already in the air, most s
 coverCredit: "Photo by ian dooley on Unsplash"
 ---
 
-This blog is a static Astro site. Seven pages, four of them posts. And pushing one commit took about 12 minutes to reach production. The time went to three places: a build dominated by OG card rendering, a CI runner re-encoding images it had encoded on the previous push, and an upload re-sending files the server already had. None of it was useful new work. Here's where it all went.
+This blog is a static Astro site. Seven pages, four of them posts. And pushing one commit took about 12 minutes to reach production. The time went to three places: a build dominated by OG card rendering, a CI runner re-encoding images it had encoded on the previous push, and an upload re-sending files the server already had. None of it was useful new work.
 
 ## Four minutes to build seven pages
 

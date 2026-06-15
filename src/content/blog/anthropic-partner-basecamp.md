@@ -7,7 +7,7 @@ cover: "london-eye.jpg"
 coverAlt: "The London Eye gone quiet over the Thames at dusk, a minute before the lights came up."
 ---
 
-Last week I got to spend two days at Anthropic's Partner Basecamp. It's a training for the people who carry [Claude](https://www.anthropic.com/claude) into client work: a morning of commercial framing, an afternoon of building, repeated. I came back with a clearer idea of how to sell AI to people who don't actually want it, a mental model for where AI lands inside a company, and, almost as a bonus, an evening or two to walk London again. Here's what stuck.
+Last week I got to spend two days at Anthropic's Partner Basecamp. It's a training for the people who carry [Claude](https://www.anthropic.com/claude) into client work: a morning of commercial framing, an afternoon of building, repeated. I came back with a clearer idea of how to sell AI to people who don't actually want it, a mental model for where AI lands inside a company, and, almost as a bonus, an evening or two to walk London again.
 
 ## The codes for selling AI to a reluctant client
 

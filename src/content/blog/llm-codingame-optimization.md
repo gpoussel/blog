@@ -10,7 +10,7 @@ coverCredit: "Photo by Ruben Caldera on Unsplash"
 
 CodinGame has a category called [Optimization](https://www.codingame.com/training/optimization). The puzzles there aren't pass/fail. You submit a program, it runs against one fixed hidden test case (the same one for everyone), and you get a score. Better score, higher rank. There's no single correct answer, only a less-bad one, and the leaderboard never really closes.
 
-I pointed Opus 4.8 at five of them, the same way I [ran it at code golf](/blog/llm-code-golf-typescript/) the week before. The result split cleanly in two. On a textbook problem it tied the very top of the leaderboard. On the open-ended games it landed at a sixth, sometimes an eighth, of the best score and stopped climbing. What it struggles with isn't the solving. It's the squeeze.
+I pointed Opus 4.8 at five of them, the same way I [ran it at code golf](/blog/llm-code-golf-typescript/) the week before. The result split cleanly in two. On a textbook problem it tied the very top of the leaderboard. On the open-ended games it landed at a sixth, sometimes an eighth, of the best score and stopped climbing. It struggles with the squeeze, not the solving.
 
 ## Why these puzzles make good test subjects
 
