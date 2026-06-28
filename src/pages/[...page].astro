@@ -6,7 +6,7 @@ import Pagination from "../components/Pagination.astro";
 import { SITE } from "../consts";
 import { HOME_LEDE } from "../utils/page-meta";
 import { getPublishedPosts, PAGE_SIZE } from "../utils/posts";
-import { websiteJsonLd } from "../utils/jsonld";
+import { homeJsonLd } from "../utils/jsonld";
 import type { Post } from "../utils/posts";
 
 // The home list, paginated: / then /2, /3, ... The newest post is pulled out
@@ -26,7 +26,7 @@ interface Props {
 const { page, featured } = Astro.props;
 const isFirstPage = page.currentPage === 1;
 const jsonLd = isFirstPage
-  ? websiteJsonLd(new URL("/", Astro.site ?? Astro.url))
+  ? homeJsonLd(new URL("/", Astro.site ?? Astro.url))
   : undefined;
 ---
 

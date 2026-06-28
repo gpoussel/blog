@@ -11,6 +11,7 @@ import {
   type Post,
 } from "../../../utils/posts";
 import { categoryDescription, postCountLabel } from "../../../utils/page-meta";
+import { categoryJsonLd } from "../../../utils/jsonld";
 
 // One paginated list per category: /category/<slug>/, /category/<slug>/2, ...
 // Categories are derived from published posts, so an empty category never
@@ -44,12 +45,23 @@ const countLabel = postCountLabel(category.count);
 const title = isFirstPage
   ? category.name
   : `${category.name}, page ${page.currentPage}`;
+
+// JSON-LD only on the first page (the canonical entry point for the category).
+const siteURL = new URL("/", Astro.site ?? Astro.url);
+const jsonLd = isFirstPage
+  ? categoryJsonLd(siteURL, {
+      name: category.name,
+      url: new URL(`/category/${category.slug}/`, siteURL),
+      description: categoryDescription(category),
+    })
+  : undefined;
 ---
 
 <BaseLayout
   title={title}
   description={categoryDescription(category)}
   ogRoute={`category/${category.slug}`}
+  jsonLd={jsonLd}
   prev={page.url.prev}
   next={page.url.next}
 >
