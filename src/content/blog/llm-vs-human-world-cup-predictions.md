@@ -3,8 +3,8 @@ title: "I mixed LLMs into my friends' World Cup prediction pool"
 description: "I dropped the PunditBench LLM predictions into my friends' World Cup pool, scored two ways. On raw scores DeepSeek V4 Flash edged everyone; under a betting-odds system only Grok 4.3 cracked the top five. The lesson isn't who won: the same market finishes 55th played naively and 20th played well, so turning a prediction into a good ticket matters more than the prediction."
 pubDate: 2026-06-28
 categories: ["AI"]
-cover: "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1600&q=80"
-coverAlt: "A gold trophy and a soccer ball side by side on a plain surface, lit from above."
+cover: "worldcup-trophy.jpg"
+coverAlt: "A gold World Cup trophy next to an adidas match ball on the grass of an empty stadium, the stands a soft blur behind them."
 coverCredit: "Photo by Fauzan Saari on Unsplash"
 ---
 
