@@ -11,6 +11,9 @@
 // without re-describing the author on every page.
 
 import { SITE, SOCIALS } from "../consts";
+// The author portrait also shown on the About page; reused here so the Person
+// node carries an image (a strong identity signal for search/LLM crawlers).
+import portrait from "../assets/photos/myself.jpg";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -48,6 +51,14 @@ function person(site: URL): JsonLd {
       "Travel",
     ],
     knowsLanguage: ["en", "fr"],
+    image: {
+      "@type": "ImageObject",
+      "@id": id(site, "person-image"),
+      url: new URL(portrait.src, site).href,
+      width: portrait.width,
+      height: portrait.height,
+      caption: SITE.author,
+    },
     // sameAs is the key disambiguation signal: it links this Person to its
     // profiles on other platforms so engines can merge them into one identity.
     sameAs: SOCIALS.map((s) => s.href),
