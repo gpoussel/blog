@@ -24,51 +24,47 @@ const resolvedCover = await resolveCover(cover);
 const loading = featured ? "eager" : "lazy";
 ---
 
-{
-  /* The title link is stretched over the whole card (its ::after), so the card
+{/* The title link is stretched over the whole card (its ::after), so the card
     stays one big click target while the category pills remain real, separately
-    clickable links layered above it. */
-}
+    clickable links layered above it. */}
 <article
   class:list={["card", { featured }]}
   style={`--d:${0.06 * index + 0.05}s`}
 >
   <div class="thumb">
-    {
-      "local" in resolvedCover ? (
-        <Image
-          src={resolvedCover.local}
-          alt={coverAlt}
-          format="avif"
-          widths={CARD_COVER_WIDTHS}
-          sizes="(max-width: 46rem) 100vw, 50vw"
-          loading={loading}
-          decoding="async"
-        />
-      ) : (
-        <img
-          src={resolvedCover.remote}
-          alt={coverAlt}
-          loading={loading}
-          decoding="async"
-          width="800"
-          height="500"
-        />
-      )
-    }
+    {"local" in resolvedCover ? (
+      <Image
+        src={resolvedCover.local}
+        alt={coverAlt}
+        format="avif"
+        widths={CARD_COVER_WIDTHS}
+        sizes="(max-width: 46rem) 100vw, 50vw"
+        loading={loading}
+        decoding="async"
+      />
+    ) : (
+      <img
+        src={resolvedCover.remote}
+        alt={coverAlt}
+        loading={loading}
+        decoding="async"
+        width="800"
+        height="500"
+      />
+    )}
     <span class="pills">
-      {
-        categories.map((category) => (
-          <a class="pill cat" href={`/category/${slugify(category)}/`}>
-            {category}
-          </a>
-        ))
-      }
+      {categories.map((category) => (
+        <a class="pill cat" href={`/category/${slugify(category)}/`}>
+          {category}
+        </a>
+      ))}
     </span>
   </div>
   <div class="body">
     <h2 class="title">
-      <a class="title-link" href={href}>{title}</a>
+      <a class="title-link" href={href}>
+        {title}
+      </a>
     </h2>
     <p class="excerpt">{description}</p>
     <p class="meta foot">

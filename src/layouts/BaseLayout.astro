@@ -80,29 +80,25 @@ const ogImage = new URL(`/og/${ogRoute}.png`, Astro.site ?? Astro.url);
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
 
-    {
-      article && (
-        <>
-          <meta name="author" content={SITE.author} />
-          <meta property="article:author" content={SITE.author} />
-          {publishedTime && (
-            <meta property="article:published_time" content={publishedTime} />
-          )}
-          {(modifiedTime ?? publishedTime) && (
-            <meta
-              property="article:modified_time"
-              content={modifiedTime ?? publishedTime}
-            />
-          )}
-        </>
-      )
-    }
+    {article && (
+      <>
+        <meta name="author" content={SITE.author} />
+        <meta property="article:author" content={SITE.author} />
+        {publishedTime && (
+          <meta property="article:published_time" content={publishedTime} />
+        )}
+        {(modifiedTime ?? publishedTime) && (
+          <meta
+            property="article:modified_time"
+            content={modifiedTime ?? publishedTime}
+          />
+        )}
+      </>
+    )}
 
-    {
-      jsonLdText && (
-        <script type="application/ld+json" is:inline set:html={jsonLdText} />
-      )
-    }
+    {jsonLdText && (
+      <script type="application/ld+json" is:inline set:html={jsonLdText} />
+    )}
 
     <link
       rel="alternate"
@@ -130,7 +126,9 @@ const ogImage = new URL(`/og/${ogRoute}.png`, Astro.site ?? Astro.url);
   </head>
   <body>
     <TopoBackground />
-    <a href="#main" class="skip-link">Skip to content</a>
+    <a href="#main" class="skip-link">
+      Skip to content
+    </a>
     <Header />
     <main id="main">
       <slot />
