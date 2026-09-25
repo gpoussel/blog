@@ -2,6 +2,7 @@
 title: "Fable 5 shaves a quarter off Opus at code golf"
 description: "I re-ran the 21 CodinGame code golf puzzles from the Opus post with Claude Fable 5. It wrote 24.7% fewer bytes overall, 10,712 down to 8,065: still above the best human TypeScript, but closing the gap fast."
 pubDate: 2026-06-13
+updatedDate: 2026-09-25
 categories: ["AI", "Competitive Programming"]
 cover: "code-golf-fable.jpg"
 coverAlt: "A single white golf ball resting on a close-cropped green, the fairway falling away soft and out of focus behind it."
@@ -9,6 +10,8 @@ coverCredit: "Photo by Peter Drew on Unsplash"
 ---
 
 Two weeks ago I [ran Opus 4.8 at code golf](/blog/llm-code-golf-typescript/): 21 CodinGame puzzles in TypeScript, fewest bytes wins. It lost. Longer than the best human TypeScript on nearly every puzzle, three or four times longer on the worst ones. Claude Fable 5 is the new top model, so I handed it the exact same 21 puzzles, the same golf skill, the same prompt, and counted bytes again. It wrote 24.7% less code overall: 10,712 bytes down to 8,065. Fable still sits above the best human TypeScript everywhere, but the gap got a lot smaller.
+
+_Follow-up: in September I ran [Claude Opus 5.5](/blog/llm-code-golf-opus-5-5/) on the same puzzles. Instead of shortening these programs, it rewrote them, and came in 47% under Fable 5._
 
 ## It writes the same program, only shorter
 
