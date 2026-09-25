@@ -20,19 +20,17 @@ import { SOCIALS } from "../consts";
       <Icon name="lucide:coffee" class="cup" aria-label="coffee" role="img" />
     </p>
     <nav class="socials" aria-label="Social links">
-      {
-        SOCIALS.map((s) => (
-          <a
-            href={s.href}
-            target="_blank"
-            rel="me noopener noreferrer"
-            aria-label={s.label}
-            title={s.label}
-          >
-            <Icon name={s.icon} aria-hidden="true" />
-          </a>
-        ))
-      }
+      {SOCIALS.map((s) => (
+        <a
+          href={s.href}
+          target="_blank"
+          rel="me noopener noreferrer"
+          aria-label={s.label}
+          title={s.label}
+        >
+          <Icon name={s.icon} aria-hidden="true" />
+        </a>
+      ))}
     </nav>
   </div>
 </footer>

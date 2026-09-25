@@ -66,51 +66,47 @@ const jsonLd = articleJsonLd(siteURL, {
 >
   <article class="post">
     <header class="container post-head prose-width">
-      <a href="/" class="back">← All writing</a>
+      <a href="/" class="back">
+        ← All writing
+      </a>
       <p class="pills">
-        {
-          categories.map((category) => (
-            <a class="pill" href={`/category/${slugify(category)}/`}>
-              {category}
-            </a>
-          ))
-        }
+        {categories.map((category) => (
+          <a class="pill" href={`/category/${slugify(category)}/`}>
+            {category}
+          </a>
+        ))}
       </p>
       <h1 class="post-title">{title}</h1>
       <p class="post-desc">{description}</p>
       <p class="meta post-meta">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
         <span class="meta-dot">{minutes} min read</span>
-        {
-          updatedDate && (
-            <span class="meta-dot">updated {formatDate(updatedDate)}</span>
-          )
-        }
+        {updatedDate && (
+          <span class="meta-dot">updated {formatDate(updatedDate)}</span>
+        )}
       </p>
     </header>
 
     <figure class="container cover">
-      {
-        "local" in resolvedCover ? (
-          <Image
-            src={resolvedCover.local}
-            alt={coverAlt}
-            format="avif"
-            widths={COVER_WIDTHS}
-            sizes="(max-width: 70rem) 100vw, 70rem"
-            loading="eager"
-            fetchpriority="high"
-          />
-        ) : (
-          <img
-            src={resolvedCover.remote}
-            alt={coverAlt}
-            width="1280"
-            height="720"
-            fetchpriority="high"
-          />
-        )
-      }
+      {"local" in resolvedCover ? (
+        <Image
+          src={resolvedCover.local}
+          alt={coverAlt}
+          format="avif"
+          widths={COVER_WIDTHS}
+          sizes="(max-width: 70rem) 100vw, 70rem"
+          loading="eager"
+          fetchpriority="high"
+        />
+      ) : (
+        <img
+          src={resolvedCover.remote}
+          alt={coverAlt}
+          width="1280"
+          height="720"
+          fetchpriority="high"
+        />
+      )}
       {coverCredit && <figcaption>{coverCredit}</figcaption>}
     </figure>
 
@@ -121,7 +117,9 @@ const jsonLd = articleJsonLd(siteURL, {
     </div>
 
     <footer class="container post-foot prose-width">
-      <a href="/" class="back">← Back to writing</a>
+      <a href="/" class="back">
+        ← Back to writing
+      </a>
       <Comments uid={post.id} />
     </footer>
   </article>

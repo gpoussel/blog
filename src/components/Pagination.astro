@@ -13,33 +13,31 @@ const { page } = Astro.props;
 const { currentPage, lastPage, url } = page;
 ---
 
-{
-  lastPage > 1 && (
-    <nav class="pagination" aria-label="Pagination">
-      {url.prev ? (
-        <a class="page-link" href={url.prev} rel="prev">
-          <span aria-hidden="true">←</span> Newer
-        </a>
-      ) : (
-        <span class="page-link is-disabled" aria-hidden="true">
-          <span>←</span> Newer
-        </span>
-      )}
-      <span class="page-indicator">
-        Page {currentPage} of {lastPage}
+{lastPage > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    {url.prev ? (
+      <a class="page-link" href={url.prev} rel="prev">
+        <span aria-hidden="true">←</span> Newer
+      </a>
+    ) : (
+      <span class="page-link is-disabled" aria-hidden="true">
+        <span>←</span> Newer
       </span>
-      {url.next ? (
-        <a class="page-link" href={url.next} rel="next">
-          Older <span aria-hidden="true">→</span>
-        </a>
-      ) : (
-        <span class="page-link is-disabled" aria-hidden="true">
-          Older <span>→</span>
-        </span>
-      )}
-    </nav>
-  )
-}
+    )}
+    <span class="page-indicator">
+      Page {currentPage} of {lastPage}
+    </span>
+    {url.next ? (
+      <a class="page-link" href={url.next} rel="next">
+        Older <span aria-hidden="true">→</span>
+      </a>
+    ) : (
+      <span class="page-link is-disabled" aria-hidden="true">
+        Older <span>→</span>
+      </span>
+    )}
+  </nav>
+)}
 
 <style>
   .pagination {

@@ -34,18 +34,16 @@ const paths = generateContours({
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
   >
-    {
-      paths.map((p) => (
-        <path
-          d={p.d}
-          stroke={p.master ? "var(--topo-strong)" : "var(--topo)"}
-          stroke-width={p.master ? 1.25 : 1}
-          stroke-linejoin="round"
-          stroke-linecap="round"
-          vector-effect="non-scaling-stroke"
-        />
-      ))
-    }
+    {paths.map((p) => (
+      <path
+        d={p.d}
+        stroke={p.master ? "var(--topo-strong)" : "var(--topo)"}
+        stroke-width={p.master ? 1.25 : 1}
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        vector-effect="non-scaling-stroke"
+      />
+    ))}
   </svg>
 </div>
 
