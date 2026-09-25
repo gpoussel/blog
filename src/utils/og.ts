@@ -172,6 +172,57 @@ const esc = (s: string) =>
 const truncate = (s: string, max: number) =>
   s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s;
 
+// Vertical metrics of the two card layouts, shared by the markup and by
+// `fitDescriptionLines` so the line budget cannot drift from what is drawn.
+interface CardLayout {
+  padY: number;
+  titleGap: number;
+  descGap: number;
+  descSize: number;
+  descLeading: number;
+}
+const DEFAULT_LAYOUT: CardLayout = {
+  padY: 78,
+  titleGap: 22,
+  descGap: 26,
+  descSize: 31,
+  descLeading: 1.45,
+};
+const COVER_LAYOUT: CardLayout = {
+  padY: 70,
+  titleGap: 20,
+  descGap: 22,
+  descSize: 28,
+  descLeading: 1.45,
+};
+
+// Smallest breathing room kept between the text block and the brand row above
+// it or the host footer below it.
+const MIN_GAP = 24;
+
+// How many description lines fit once the title has wrapped. A title takes one
+// to three lines, so a fixed character budget either wastes space or (with a
+// three-line title) pushes the description into the footer. `heights` are the
+// rendered heights of the `data-og` nodes, measured in a first satori pass.
+function fitDescriptionLines(
+  heights: Record<string, number>,
+  layout: CardLayout,
+) {
+  const h = (key: string) => heights[key] ?? 0;
+  const free =
+    OG_HEIGHT -
+    2 * layout.padY -
+    h("brand") -
+    h("footer") -
+    2 * MIN_GAP -
+    h("eyebrow") -
+    layout.titleGap -
+    h("title") -
+    layout.descGap;
+  const lines = Math.floor(free / (layout.descSize * layout.descLeading));
+  return Math.max(1, Math.min(4, lines));
+}
+
 // Image sources are injected AFTER parsing. satori-html's `html()` parser is
 // ~O(n²) over the markup string, so embedding the large base64 data URIs (the
 // topo background alone is ~320KB) directly in the `src` attributes made parsing
@@ -204,34 +255,40 @@ function injectImages(node: unknown, srcs: Record<string, string>): unknown {
 }
 
 function brandRow() {
-  return `<div style="display:flex;align-items:center;gap:20px">
+  return `<div data-og="brand" style="display:flex;align-items:center;gap:20px">
     <img src="${LOGO_SRC}" width="76" height="76" style="width:76px;height:76px;border-radius:16px" />
     <span style="font-family:'Hanken Grotesk';font-weight:700;font-size:34px;letter-spacing:-0.01em;color:${LIGHT}">${esc(SITE.title)}</span>
   </div>`;
 }
 
 function footerRow(host?: string) {
-  if (!host) return `<div style="display:flex"></div>`;
-  return `<div style="display:flex;align-items:center;color:${MUTED};font-family:'Hanken Grotesk';font-weight:600;font-size:24px;letter-spacing:0.01em">${esc(host)}</div>`;
+  if (!host) return `<div data-og="footer" style="display:flex"></div>`;
+  return `<div data-og="footer" style="display:flex;align-items:center;color:${MUTED};font-family:'Hanken Grotesk';font-weight:600;font-size:24px;letter-spacing:0.01em">${esc(host)}</div>`;
 }
 
 function eyebrow(label: string) {
-  return `<div style="display:flex;align-items:center;font-family:'Hanken Grotesk';font-weight:700;font-size:24px;letter-spacing:0.14em;text-transform:uppercase;color:${MAUVE}">${esc(truncate(label, 28))}</div>`;
+  return `<div data-og="eyebrow" style="display:flex;align-items:center;font-family:'Hanken Grotesk';font-weight:700;font-size:24px;letter-spacing:0.14em;text-transform:uppercase;color:${MAUVE}">${esc(truncate(label, 28))}</div>`;
 }
 
-function buildDefault(input: OgInput, logo: string, topo: string) {
+function buildDefault(
+  input: OgInput,
+  logo: string,
+  topo: string,
+  descLines: number,
+) {
+  const L = DEFAULT_LAYOUT;
   const title = esc(truncate(input.title, 80));
-  const desc = esc(truncate(input.description, 180));
+  const desc = esc(input.description);
   const markup =
     html(`<div style="display:flex;flex-direction:column;width:${OG_WIDTH}px;height:${OG_HEIGHT}px;background-color:${SLATE};position:relative">
     <img src="${TOPO_SRC}" width="${OG_WIDTH}" height="${OG_HEIGHT}" style="position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:${OG_HEIGHT}px" />
     <div style="display:flex;position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:10px;background-image:${ACCENT_BAR}"></div>
-    <div style="display:flex;flex-direction:column;flex:1;padding:78px 84px;justify-content:space-between">
+    <div style="display:flex;flex-direction:column;flex:1;padding:${L.padY}px 84px;justify-content:space-between">
       ${brandRow()}
       <div style="display:flex;flex-direction:column">
         ${eyebrow(input.eyebrow)}
-        <div style="display:flex;font-family:'Hanken Grotesk';font-weight:700;font-size:66px;line-height:1.07;letter-spacing:-0.025em;color:${LIGHT};margin-top:22px">${title}</div>
-        <div style="display:flex;font-family:'Literata';font-size:31px;line-height:1.45;color:${MUTED};margin-top:26px;max-width:880px">${desc}</div>
+        <div data-og="title" style="display:flex;font-family:'Hanken Grotesk';font-weight:700;font-size:66px;line-height:1.07;letter-spacing:-0.025em;color:${LIGHT};margin-top:${L.titleGap}px">${title}</div>
+        <div style="display:block;line-clamp:${descLines};font-family:'Literata';font-size:${L.descSize}px;line-height:${L.descLeading};color:${MUTED};margin-top:${L.descGap}px;max-width:880px">${desc}</div>
       </div>
       ${footerRow(input.host)}
     </div>
@@ -244,21 +301,23 @@ function buildWithCover(
   logo: string,
   topo: string,
   cover: string,
+  descLines: number,
 ) {
+  const L = COVER_LAYOUT;
   const title = esc(truncate(input.title, 70));
-  const desc = esc(truncate(input.description, 150));
+  const desc = esc(input.description);
   // DOM order is paint order in satori (z-index is unsupported): the topo
   // background sits at the back, then the cover panel and seam, then the top
   // accent bar on top. The topo shows behind the text and is hidden by the photo.
   const markup =
     html(`<div style="display:flex;flex-direction:row;width:${OG_WIDTH}px;height:${OG_HEIGHT}px;background-color:${SLATE};position:relative">
     <img src="${TOPO_SRC}" width="${OG_WIDTH}" height="${OG_HEIGHT}" style="position:absolute;top:0;left:0;width:${OG_WIDTH}px;height:${OG_HEIGHT}px" />
-    <div style="display:flex;flex-direction:column;width:760px;padding:70px 64px;justify-content:space-between">
+    <div style="display:flex;flex-direction:column;width:760px;padding:${L.padY}px 64px;justify-content:space-between">
       ${brandRow()}
       <div style="display:flex;flex-direction:column">
         ${eyebrow(input.eyebrow)}
-        <div style="display:flex;font-family:'Hanken Grotesk';font-weight:700;font-size:54px;line-height:1.08;letter-spacing:-0.025em;color:${LIGHT};margin-top:20px">${title}</div>
-        <div style="display:flex;font-family:'Literata';font-style:italic;font-size:28px;line-height:1.45;color:${MUTED};margin-top:22px;max-width:600px">${desc}</div>
+        <div data-og="title" style="display:flex;font-family:'Hanken Grotesk';font-weight:700;font-size:54px;line-height:1.08;letter-spacing:-0.025em;color:${LIGHT};margin-top:${L.titleGap}px">${title}</div>
+        <div style="display:block;line-clamp:${descLines};font-family:'Literata';font-style:italic;font-size:${L.descSize}px;line-height:${L.descLeading};color:${MUTED};margin-top:${L.descGap}px;max-width:600px">${desc}</div>
       </div>
       ${footerRow(input.host)}
     </div>
@@ -283,11 +342,29 @@ export async function renderOgImage(input: OgInput): Promise<Buffer> {
     loadTopoBackground(),
   ]);
   const cover = input.cover ? await loadCover(input.cover) : null;
-  const markup = cover
-    ? buildWithCover(input, logo, topo, cover)
-    : buildDefault(input, logo, topo);
+  const build = (descLines: number) =>
+    cover
+      ? buildWithCover(input, logo, topo, cover, descLines)
+      : buildDefault(input, logo, topo, descLines);
 
-  const svg = await satori(markup, {
+  // First pass only measures (satori renders a card in ~40ms): how tall the
+  // title wrapped decides how many description lines the final card can hold.
+  const heights: Record<string, number> = {};
+  await satori(build(1), {
+    width: OG_WIDTH,
+    height: OG_HEIGHT,
+    fonts,
+    onNodeDetected: (node) => {
+      const key = node.props?.["data-og"];
+      if (typeof key === "string") heights[key] = node.height;
+    },
+  });
+  const descLines = fitDescriptionLines(
+    heights,
+    cover ? COVER_LAYOUT : DEFAULT_LAYOUT,
+  );
+
+  const svg = await satori(build(descLines), {
     width: OG_WIDTH,
     height: OG_HEIGHT,
     fonts,
