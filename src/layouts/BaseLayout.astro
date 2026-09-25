@@ -70,6 +70,7 @@ const ogImage = new URL(`/og/${ogRoute}.png`, Astro.site ?? Astro.url);
     <meta name="color-scheme" content="light dark" />
 
     <meta property="og:type" content={article ? "article" : "website"} />
+    <meta property="og:site_name" content={SITE.title} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
