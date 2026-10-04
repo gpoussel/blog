@@ -9,6 +9,7 @@ import { unified } from "@astrojs/markdown-remark";
 import remarkDirective from "remark-directive";
 import remarkGallery from "./src/plugins/remark-gallery.mjs";
 import remarkChart from "./src/plugins/remark-chart.mjs";
+import remarkDirectiveFallback from "./src/plugins/remark-directive-fallback.mjs";
 
 // Map each blog slug to its last-modified date (updatedDate ?? pubDate) by
 // reading post frontmatter at config load, so the sitemap can carry real
@@ -56,11 +57,17 @@ export default defineConfig({
   markdown: {
     // remarkDirective parses the `:::` syntax; remarkGallery and remarkChart
     // (after it) turn those blocks into the lightbox grid and static SVG charts
-    // respectively. Order matters. They live on the unified() processor (Astro
+    // respectively, then remarkDirectiveFallback restores stray text directives
+    // (the "1:9" in "a 1:9 ratio") as plain text. Order matters. They live on the unified() processor (Astro
     // 6's replacement for `markdown.remarkPlugins`); shikiConfig below stays
     // top-level and is merged in by the processor.
     processor: unified({
-      remarkPlugins: [remarkDirective, remarkGallery, remarkChart],
+      remarkPlugins: [
+        remarkDirective,
+        remarkGallery,
+        remarkChart,
+        remarkDirectiveFallback,
+      ],
     }),
     shikiConfig: {
       themes: { light: "github-light", dark: "github-dark" },

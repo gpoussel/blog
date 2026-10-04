@@ -26,7 +26,7 @@ Each failed attempt left me with one idea that's now a piece of the working tool
 - **May, a full app.** FastAPI and React, colour heuristics, [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) on GPU, a MobileNet classifier. Bad results everywhere: reading, splitting into games, and far too much manual review.
 - **June, CLIP and nearest neighbours.** Low-quality video, one frame per second, compared against a handful of reference images. Better intuition, weak detection.
 
-The October version was written in one evening with [Claude Code](https://www.anthropic.com/claude-code), from a quarter to six until a bit after midnight. That sounds fast, and it was, but it only worked because I came in knowing exactly what had failed and why.
+The October version was written in one evening with [Claude Code](https://www.anthropic.com/claude-code), from 17:45 to a bit after midnight. That sounds fast, and it was, but it only worked because I came in knowing exactly what had failed and why.
 
 ## Piece one: knowing where you are in the video
 

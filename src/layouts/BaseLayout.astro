@@ -21,7 +21,7 @@ interface Props {
   /** Article publish/update timestamps (ISO 8601) for `article:*` OG meta. */
   publishedTime?: string;
   modifiedTime?: string;
-  /** schema.org structured data injected as a JSON-LD <script>. */
+  /** schema.org structured data injected as an inline JSON-LD script tag. */
   jsonLd?: JsonLd | JsonLd[];
   /** Neighbouring pages of a paginated list, as site-relative paths,
    *  rendered as <link rel="prev"/"next"> for SEO. */
@@ -42,7 +42,7 @@ const {
 } = Astro.props;
 
 // JSON.stringify, then neutralise `<` so the payload can never break out of the
-// <script> element (e.g. a literal "</script>" inside a description).
+// JSON-LD script tag (e.g. a literal closing script tag inside a description).
 const jsonLdText = jsonLd
   ? JSON.stringify(jsonLd).replace(/</g, "\\u003c")
   : null;
